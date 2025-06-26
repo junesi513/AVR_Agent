@@ -121,13 +121,16 @@ class OpenAIGPTInterface(LLMInterface):
         return None
     
     def _save_detailed_response(self, func_name: str, response: str):
-        """LLM의 상세한 응답을 별도 파일에 저장"""
+        """LLM의 상세한 응답을 모델별 디렉토리에 저장"""
         try:
             from pathlib import Path
             import datetime
             
-            # 응답 저장 디렉토리 생성
-            response_dir = Path("log/llm_detailed_responses")
+            # 모델명에서 특수문자 제거
+            model_dir_name = str(self.model).replace(':', '_').replace('/', '_').replace('.', '_')
+            
+            # 응답 저장 디렉토리 생성 (모델별)
+            response_dir = Path(f"log/llm_detailed_responses/{model_dir_name}")
             response_dir.mkdir(parents=True, exist_ok=True)
             
             # 타임스탬프 생성
@@ -305,13 +308,16 @@ class GeminiInterface(LLMInterface):
         return None
     
     def _save_detailed_response(self, func_name: str, response: str):
-        """LLM의 상세한 응답을 별도 파일에 저장"""
+        """LLM의 상세한 응답을 모델별 디렉토리에 저장"""
         try:
             from pathlib import Path
             import datetime
             
-            # 응답 저장 디렉토리 생성
-            response_dir = Path("log/llm_detailed_responses")
+            # 모델명에서 특수문자 제거
+            model_dir_name = str(self.model).replace(':', '_').replace('/', '_').replace('.', '_')
+            
+            # 응답 저장 디렉토리 생성 (모델별)
+            response_dir = Path(f"log/llm_detailed_responses/{model_dir_name}")
             response_dir.mkdir(parents=True, exist_ok=True)
             
             # 타임스탬프 생성
@@ -474,13 +480,16 @@ class OllamaInterface(LLMInterface):
         return None
     
     def _save_detailed_response(self, func_name: str, response: str):
-        """LLM의 상세한 응답을 별도 파일에 저장"""
+        """LLM의 상세한 응답을 모델별 디렉토리에 저장"""
         try:
             from pathlib import Path
             import datetime
             
-            # 응답 저장 디렉토리 생성
-            response_dir = Path("log/llm_detailed_responses")
+            # 모델명에서 특수문자 제거
+            model_dir_name = str(self.model).replace(':', '_').replace('/', '_').replace('.', '_')
+            
+            # 응답 저장 디렉토리 생성 (모델별)
+            response_dir = Path(f"log/llm_detailed_responses/{model_dir_name}")
             response_dir.mkdir(parents=True, exist_ok=True)
             
             # 타임스탬프 생성
