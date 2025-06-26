@@ -1,0 +1,16 @@
+rules:
+  - id: vuln-1-toobjectarray
+    message: 잠재적인 Null Pointer Dereference 취약점
+    severity: MEDIUM
+    languages: [java]
+    pattern-either:
+      - pattern: |
+          public $TYPE toObjectArray(...) {
+            ...
+            if ($VAR == null) {
+              ...
+            }
+            ...
+            $VAR.$METHOD(...)
+            ...
+          }

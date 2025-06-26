@@ -1,0 +1,207 @@
+{
+  "vuln_id": 1,
+  "timestamp": "2025-06-26T15:52:53.098020",
+  "ast_data": {
+    "ObjectArrayCodec.java": {
+      "file_path": "benchmark/Java/VUL4J/VUL4J-1/ObjectArrayCodec.java",
+      "content": "/*\n * Copyright 1999-2018 Alibaba Group.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\npackage com.alibaba.fastjson.serializer;\n\nimport java.io.IOException;\nimport java.lang.reflect.Array;\nimport java.lang.reflect.GenericArrayType;\nimport java.lang.reflect.ParameterizedType;\nimport java.lang.reflect.Type;\nimport java.lang.reflect.TypeVariable;\n\nimport com.alibaba.fastjson.JSONArray;\nimport com.alibaba.fastjson.parser.DefaultJSONParser;\nimport com.alibaba.fastjson.parser.JSONLexer;\nimport com.alibaba.fastjson.parser.JSONToken;\nimport com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;\nimport com.alibaba.fastjson.util.TypeUtils;\n\n/**\n * @author wenshao[szujobs@hotmail.com]\n */\npublic class ObjectArrayCodec implements ObjectSerializer, ObjectDeserializer {\n\n    public static final ObjectArrayCodec instance = new ObjectArrayCodec();\n\n    public ObjectArrayCodec(){\n    }\n\n    public final void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features)\n                                                                                                       throws IOException {\n        SerializeWriter out = serializer.out;\n\n        Object[] array = (Object[]) object;\n\n        if (object == null) {\n            out.writeNull(SerializerFeature.WriteNullListAsEmpty);\n            return;\n        }\n\n        int size = array.length;\n\n        int end = size - 1;\n\n        if (end == -1) {\n            out.append(\"[]\");\n            return;\n        }\n\n        SerialContext context = serializer.context;\n        serializer.setContext(context, object, fieldName, 0);\n\n        try {\n            Class<?> preClazz = null;\n            ObjectSerializer preWriter = null;\n            out.append('[');\n\n            if (out.isEnabled(SerializerFeature.PrettyFormat)) {\n                serializer.incrementIndent();\n                serializer.println();\n                for (int i = 0; i < size; ++i) {\n                    if (i != 0) {\n                        out.write(',');\n                        serializer.println();\n                    }\n                    serializer.writeWithFieldName(array[i], Integer.valueOf(i));\n                }\n                serializer.decrementIdent();\n                serializer.println();\n                out.write(']');\n                return;\n            }\n\n            for (int i = 0; i < end; ++i) {\n                Object item = array[i];\n\n                if (item == null) {\n                    out.append(\"null,\");\n                } else {\n                    if (serializer.containsReference(item)) {\n                        serializer.writeReference(item);\n                    } else {\n                        Class<?> clazz = item.getClass();\n\n                        if (clazz == preClazz) {\n                            preWriter.write(serializer, item, i, null, 0);\n                        } else {\n                            preClazz = clazz;\n                            preWriter = serializer.getObjectWriter(clazz);\n\n                            preWriter.write(serializer, item, i, null, 0);\n                        }\n                    }\n                    out.append(',');\n                }\n            }\n\n            Object item = array[end];\n\n            if (item == null) {\n                out.append(\"null]\");\n            } else {\n                if (serializer.containsReference(item)) {\n                    serializer.writeReference(item);\n                } else {\n                    serializer.writeWithFieldName(item, end);\n                }\n                out.append(']');\n            }\n        } finally {\n            serializer.context = context;\n        }\n    }\n    \n    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n    public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {\n        final JSONLexer lexer = parser.lexer;\n        int token = lexer.token();\n        if (token == JSONToken.NULL) {\n            lexer.nextToken(JSONToken.COMMA);\n            return null;\n        }\n\n        if (token == JSONToken.LITERAL_STRING || token == JSONToken.HEX) {\n            byte[] bytes = lexer.bytesValue();\n            lexer.nextToken(JSONToken.COMMA);\n\n            if (bytes.length == 0 && type != byte[].class) {\n                return null;\n            }\n\n            return (T) bytes;\n        }\n\n        Class componentClass;\n        Type componentType;\n        if (type instanceof GenericArrayType) {\n            GenericArrayType clazz = (GenericArrayType) type;\n            componentType = clazz.getGenericComponentType();\n            if (componentType instanceof TypeVariable) {\n                TypeVariable typeVar = (TypeVariable) componentType;\n                Type objType = parser.getContext().type;\n                if (objType instanceof ParameterizedType) {\n                    ParameterizedType objParamType = (ParameterizedType) objType;\n                    Type objRawType = objParamType.getRawType();\n                    Type actualType = null;\n                    if (objRawType instanceof Class) {\n                        TypeVariable[] objTypeParams = ((Class) objRawType).getTypeParameters();\n                        for (int i = 0; i < objTypeParams.length; ++i) {\n                            if (objTypeParams[i].getName().equals(typeVar.getName())) {\n                                actualType = objParamType.getActualTypeArguments()[i];\n                            }\n                        }\n                    }\n                    if (actualType instanceof Class) {\n                        componentClass = (Class) actualType;\n                    } else {\n                        componentClass = Object.class;\n                    }\n                } else {\n                    componentClass = TypeUtils.getClass(typeVar.getBounds()[0]);\n                }\n            } else {\n                componentClass = TypeUtils.getClass(componentType);\n            }\n        } else {\n            Class clazz = (Class) type;\n            componentType = componentClass = clazz.getComponentType();\n        }\n        JSONArray array = new JSONArray();\n        parser.parseArray(componentType, array, fieldName);\n\n        return (T) toObjectArray(parser, componentClass, array);\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    private <T> T toObjectArray(DefaultJSONParser parser, Class<?> componentType, JSONArray array) {\n        if (array == null) {\n            return null;\n        }\n\n        int size = array.size();\n\n        Object objArray = Array.newInstance(componentType, size);\n        for (int i = 0; i < size; ++i) {\n            Object value = array.get(i);\n\n            if (value == array) {\n                Array.set(objArray, i, objArray);\n                continue;\n            }\n\n            if (componentType.isArray()) {\n                Object element;\n                if (componentType.isInstance(value)) {\n                    element = value;\n                } else {\n                    element = toObjectArray(parser, componentType, (JSONArray) value);\n                }\n\n                Array.set(objArray, i, element);\n            } else {\n                Object element = null;\n                if (value instanceof JSONArray) {\n                    boolean contains = false;\n                    JSONArray valueArray = (JSONArray) value;\n                    int valueArraySize = valueArray.size();\n                    for (int y = 0; y < valueArraySize; ++y) {\n                        Object valueItem = valueArray.get(y);\n                        if (valueItem == array) {\n                            valueArray.set(i, objArray);\n                            contains = true;\n                        }\n                    }\n                    if (contains) {\n                        element = valueArray.toArray();\n                    }\n                }\n\n                if (element == null) {\n                    element = TypeUtils.cast(value, componentType, parser.getConfig());\n                }\n                Array.set(objArray, i, element);\n\n            }\n        }\n\n        array.setRelatedArray(objArray);\n        array.setComponentType(componentType);\n        return (T) objArray; // TODO\n    }\n\n    public int getFastMatchToken() {\n        return JSONToken.LBRACKET;\n    }\n}\n",
+      "classes": [
+        {
+          "name": "ObjectArrayCodec",
+          "line": 35,
+          "modifiers": [
+            "public"
+          ],
+          "interfaces": [
+            "ObjectSerializer",
+            "ObjectDeserializer"
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "modifiers": [
+            "public"
+          ],
+          "return_type": null,
+          "name": "ObjectArrayCodec",
+          "parameters": [
+            "){ } public final void write(JSONSerializer serializer",
+            "Object object",
+            "Object fieldName",
+            "Type fieldType",
+            "int features"
+          ],
+          "line": 39,
+          "body_start": 43,
+          "full_signature": "public ObjectArrayCodec(){ } public final void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {"
+        },
+        {
+          "modifiers": [
+            "public",
+            "final"
+          ],
+          "return_type": "void",
+          "name": "write",
+          "parameters": [
+            "JSONSerializer serializer",
+            "Object object",
+            "Object fieldName",
+            "Type fieldType",
+            "int features"
+          ],
+          "line": 42,
+          "body_start": 43,
+          "full_signature": "public final void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {"
+        },
+        {
+          "modifiers": [
+            "public"
+          ],
+          "return_type": "<T> T",
+          "name": "deserialze",
+          "parameters": [
+            "DefaultJSONParser parser",
+            "Type type",
+            "Object fieldName) { final JSONLexer lexer = parser.lexer; int token = lexer.token(); if (token == JSONToken.NULL) { lexer.nextToken(JSONToken.COMMA); return null; } if (token == JSONToken.LITERAL_STRING || token == JSONToken.HEX) { byte[] bytes = lexer.bytesValue(); lexer.nextToken(JSONToken.COMMA); if (bytes.length == 0 && type != byte[].class) { return null; } return (T) bytes; } Class componentClass; Type componentType; if (type instanceof GenericArrayType) { GenericArrayType clazz = (GenericArrayType) type; componentType = clazz.getGenericComponentType(); if (componentType instanceof TypeVariable) { TypeVariable typeVar = (TypeVariable) componentType; Type objType = parser.getContext().type; if (objType instanceof ParameterizedType) { ParameterizedType objParamType = (ParameterizedType) objType; Type objRawType = objParamType.getRawType(); Type actualType = null; if (objRawType instanceof Class) { TypeVariable[] objTypeParams = ((Class) objRawType).getTypeParameters(); for (int i = 0; i < objTypeParams.length; ++i) { if (objTypeParams[i].getName().equals(typeVar.getName())) { actualType = objParamType.getActualTypeArguments()[i]; } } } if (actualType instanceof Class) { componentClass = (Class) actualType; } else { componentClass = Object.class; } } else { componentClass = TypeUtils.getClass(typeVar.getBounds()[0]); } } else { componentClass = TypeUtils.getClass(componentType); } } else { Class clazz = (Class) type; componentType = componentClass = clazz.getComponentType(); } JSONArray array = new JSONArray(); parser.parseArray(componentType, array, fieldName); return (T) toObjectArray(parser, componentClass, array); } @SuppressWarnings(\"unchecked\") private <T> T toObjectArray(DefaultJSONParser parser, Class<?> componentType, JSONArray array) { if (array == null) { return null; } int size = array.size(); Object objArray = Array.newInstance(componentType, size); for (int i = 0; i < size; ++i) { Object value = array.get(i); if (value == array) { Array.set(objArray, i, objArray); continue; } if (componentType.isArray()) { Object element; if (componentType.isInstance(value)) { element = value; } else { element = toObjectArray(parser, componentType, (JSONArray) value); } Array.set(objArray, i, element); } else { Object element = null; if (value instanceof JSONArray) { boolean contains = false; JSONArray valueArray = (JSONArray) value; int valueArraySize = valueArray.size(); for (int y = 0; y < valueArraySize; ++y) { Object valueItem = valueArray.get(y); if (valueItem == array) { valueArray.set(i, objArray); contains = true; } } if (contains) { element = valueArray.toArray(); } } if (element == null) { element = TypeUtils.cast(value, componentType, parser.getConfig()); } Array.set(objArray, i, element); } } array.setRelatedArray(objArray); array.setComponentType(componentType); return (T) objArray; // TODO } public int getFastMatchToken("
+          ],
+          "line": 128,
+          "body_start": 250,
+          "full_signature": "public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) { final JSONLexer lexer = parser.lexer; int token = lexer.token(); if (token == JSONToken.NULL) { lexer.nextToken(JSONToken.COMMA); return null; } if (token == JSONToken.LITERAL_STRING || token == JSONToken.HEX) { byte[] bytes = lexer.bytesValue(); lexer.nextToken(JSONToken.COMMA); if (bytes.length == 0 && type != byte[].class) { return null; } return (T) bytes; } Class componentClass; Type componentType; if (type instanceof GenericArrayType) { GenericArrayType clazz = (GenericArrayType) type; componentType = clazz.getGenericComponentType(); if (componentType instanceof TypeVariable) { TypeVariable typeVar = (TypeVariable) componentType; Type objType = parser.getContext().type; if (objType instanceof ParameterizedType) { ParameterizedType objParamType = (ParameterizedType) objType; Type objRawType = objParamType.getRawType(); Type actualType = null; if (objRawType instanceof Class) { TypeVariable[] objTypeParams = ((Class) objRawType).getTypeParameters(); for (int i = 0; i < objTypeParams.length; ++i) { if (objTypeParams[i].getName().equals(typeVar.getName())) { actualType = objParamType.getActualTypeArguments()[i]; } } } if (actualType instanceof Class) { componentClass = (Class) actualType; } else { componentClass = Object.class; } } else { componentClass = TypeUtils.getClass(typeVar.getBounds()[0]); } } else { componentClass = TypeUtils.getClass(componentType); } } else { Class clazz = (Class) type; componentType = componentClass = clazz.getComponentType(); } JSONArray array = new JSONArray(); parser.parseArray(componentType, array, fieldName); return (T) toObjectArray(parser, componentClass, array); } @SuppressWarnings(\"unchecked\") private <T> T toObjectArray(DefaultJSONParser parser, Class<?> componentType, JSONArray array) { if (array == null) { return null; } int size = array.size(); Object objArray = Array.newInstance(componentType, size); for (int i = 0; i < size; ++i) { Object value = array.get(i); if (value == array) { Array.set(objArray, i, objArray); continue; } if (componentType.isArray()) { Object element; if (componentType.isInstance(value)) { element = value; } else { element = toObjectArray(parser, componentType, (JSONArray) value); } Array.set(objArray, i, element); } else { Object element = null; if (value instanceof JSONArray) { boolean contains = false; JSONArray valueArray = (JSONArray) value; int valueArraySize = valueArray.size(); for (int y = 0; y < valueArraySize; ++y) { Object valueItem = valueArray.get(y); if (valueItem == array) { valueArray.set(i, objArray); contains = true; } } if (contains) { element = valueArray.toArray(); } } if (element == null) { element = TypeUtils.cast(value, componentType, parser.getConfig()); } Array.set(objArray, i, element); } } array.setRelatedArray(objArray); array.setComponentType(componentType); return (T) objArray; // TODO } public int getFastMatchToken() { return JSONToken.LBRACKET; } }"
+        },
+        {
+          "modifiers": [
+            "private"
+          ],
+          "return_type": "<T> T",
+          "name": "toObjectArray",
+          "parameters": [
+            "DefaultJSONParser parser",
+            "Class<?> componentType",
+            "JSONArray array) { if (array == null) { return null; } int size = array.size(); Object objArray = Array.newInstance(componentType",
+            "size); for (int i = 0; i < size; ++i) { Object value = array.get(i); if (value == array) { Array.set(objArray, i, objArray); continue; } if (componentType.isArray()) { Object element; if (componentType.isInstance(value)) { element = value; } else { element = toObjectArray(parser, componentType, (JSONArray) value); } Array.set(objArray, i, element); } else { Object element = null; if (value instanceof JSONArray) { boolean contains = false; JSONArray valueArray = (JSONArray) value; int valueArraySize = valueArray.size(); for (int y = 0; y < valueArraySize; ++y) { Object valueItem = valueArray.get(y); if (valueItem == array) { valueArray.set(i, objArray); contains = true; } } if (contains) { element = valueArray.toArray(); } } if (element == null) { element = TypeUtils.cast(value, componentType, parser.getConfig()); } Array.set(objArray, i, element); } } array.setRelatedArray(objArray); array.setComponentType(componentType); return (T) objArray; // TODO } public int getFastMatchToken("
+          ],
+          "line": 189,
+          "body_start": 250,
+          "full_signature": "private <T> T toObjectArray(DefaultJSONParser parser, Class<?> componentType, JSONArray array) { if (array == null) { return null; } int size = array.size(); Object objArray = Array.newInstance(componentType, size); for (int i = 0; i < size; ++i) { Object value = array.get(i); if (value == array) { Array.set(objArray, i, objArray); continue; } if (componentType.isArray()) { Object element; if (componentType.isInstance(value)) { element = value; } else { element = toObjectArray(parser, componentType, (JSONArray) value); } Array.set(objArray, i, element); } else { Object element = null; if (value instanceof JSONArray) { boolean contains = false; JSONArray valueArray = (JSONArray) value; int valueArraySize = valueArray.size(); for (int y = 0; y < valueArraySize; ++y) { Object valueItem = valueArray.get(y); if (valueItem == array) { valueArray.set(i, objArray); contains = true; } } if (contains) { element = valueArray.toArray(); } } if (element == null) { element = TypeUtils.cast(value, componentType, parser.getConfig()); } Array.set(objArray, i, element); } } array.setRelatedArray(objArray); array.setComponentType(componentType); return (T) objArray; // TODO } public int getFastMatchToken() { return JSONToken.LBRACKET; } }"
+        },
+        {
+          "modifiers": [
+            "public"
+          ],
+          "return_type": "int",
+          "name": "getFastMatchToken",
+          "parameters": [],
+          "line": 245,
+          "body_start": 250,
+          "full_signature": "public int getFastMatchToken() { return JSONToken.LBRACKET; } }"
+        }
+      ],
+      "imports": [
+        "java.io.IOException",
+        "java.lang.reflect.Array",
+        "java.lang.reflect.GenericArrayType",
+        "java.lang.reflect.ParameterizedType",
+        "java.lang.reflect.Type",
+        "java.lang.reflect.TypeVariable",
+        "com.alibaba.fastjson.JSONArray",
+        "com.alibaba.fastjson.parser.DefaultJSONParser",
+        "com.alibaba.fastjson.parser.JSONLexer",
+        "com.alibaba.fastjson.parser.JSONToken",
+        "com.alibaba.fastjson.parser.deserializer.ObjectDeserializer",
+        "com.alibaba.fastjson.util.TypeUtils"
+      ]
+    }
+  },
+  "vulnerabilities": [
+    {
+      "file": "ObjectArrayCodec.java",
+      "function": "deserialze",
+      "hypothesis": {
+        "function": "deserialze",
+        "vulnerabilities": [
+          {
+            "type": "NULL_POINTER_DEREFERENCE",
+            "description": "잠재적인 Null Pointer Dereference 취약점",
+            "severity": "medium",
+            "confidence": 0.7
+          },
+          {
+            "type": "TYPE_CONFUSION",
+            "description": "타입 캐스팅 관련 Type Confusion 취약점",
+            "severity": "high",
+            "confidence": 0.8
+          }
+        ],
+        "analysis_method": "pattern_matching",
+        "severity": "medium"
+      },
+      "semgrep_rule": "rules:\n  - id: vuln-1-deserialze\n    message: 잠재적인 Null Pointer Dereference 취약점\n    severity: MEDIUM\n    languages: [java]\n    pattern-either:\n      - pattern: |\n          public $TYPE deserialze(...) {\n            ...\n            if ($VAR == null) {\n              ...\n            }\n            ...\n            $VAR.$METHOD(...)\n            ...\n          }",
+      "codeql_rule": "/**\n * @name 잠재적인 Null Pointer Dereference 취약점\n * @description Detects null pointer dereference in deserialze\n * @kind problem\n * @problem.severity medium\n * @id java/vuln-1-deserialze\n */\n\nimport java\n\nfrom Method m, MethodAccess ma, Variable v\nwhere\n  m.getName() = \"deserialze\" and\n  ma.getEnclosingCallable() = m and\n  ma.getQualifier() = v.getAnAccess() and\n  exists(EqualityTest eq | \n    eq.getAnOperand() = v.getAnAccess() and\n    eq.getAnOperand().(NullLiteral).toString() = \"null\"\n  )\nselect ma, \"Potential null pointer dereference in deserialze\"\n",
+      "severity": "medium",
+      "semgrep_results": {
+        "status": "error",
+        "error": "               \n               \n┌─────────────┐\n│ Scan Status │\n└─────────────┘\n  Scanning 1 file with 1 Code rule:\n  Scanning 1 file.\n                \n                \n┌──────────────┐\n│ Scan Summary │\n└──────────────┘\n✅ Scan completed successfully.\n • Findings: 0 (0 blocking)\n • Rules run: 1\n • Targets scanned: 1\n • Parsed lines: ~100.0%\n • No ignore information available\nRan 1 rule on 1 file: 0 findings.\n",
+        "returncode": 2
+      },
+      "codeql_results": {
+        "status": "error",
+        "error": "CodeQL database creation failed: Initializing database at /home/ace4_sijune/test/AVR/codeql_db_3873089.\nRunning build command: [/opt/codeql/java/tools/autobuild.sh]\nRunning command in /home/ace4_sijune/test/AVR/benchmark/Java/VUL4J: [/opt/codeql/java/tools/autobuild.sh]\nA fatal error occurred: Exit status 1 from command: [/opt/codeql/java/tools/autobuild.sh]\n"
+      },
+      "confirmed": false
+    },
+    {
+      "file": "ObjectArrayCodec.java",
+      "function": "toObjectArray",
+      "hypothesis": {
+        "function": "toObjectArray",
+        "vulnerabilities": [
+          {
+            "type": "NULL_POINTER_DEREFERENCE",
+            "description": "잠재적인 Null Pointer Dereference 취약점",
+            "severity": "medium",
+            "confidence": 0.7
+          },
+          {
+            "type": "TYPE_CONFUSION",
+            "description": "타입 캐스팅 관련 Type Confusion 취약점",
+            "severity": "high",
+            "confidence": 0.8
+          }
+        ],
+        "analysis_method": "pattern_matching",
+        "severity": "medium"
+      },
+      "semgrep_rule": "rules:\n  - id: vuln-1-toobjectarray\n    message: 잠재적인 Null Pointer Dereference 취약점\n    severity: MEDIUM\n    languages: [java]\n    pattern-either:\n      - pattern: |\n          public $TYPE toObjectArray(...) {\n            ...\n            if ($VAR == null) {\n              ...\n            }\n            ...\n            $VAR.$METHOD(...)\n            ...\n          }",
+      "codeql_rule": "/**\n * @name 잠재적인 Null Pointer Dereference 취약점\n * @description Detects null pointer dereference in toObjectArray\n * @kind problem\n * @problem.severity medium\n * @id java/vuln-1-toobjectarray\n */\n\nimport java\n\nfrom Method m, MethodAccess ma, Variable v\nwhere\n  m.getName() = \"toObjectArray\" and\n  ma.getEnclosingCallable() = m and\n  ma.getQualifier() = v.getAnAccess() and\n  exists(EqualityTest eq | \n    eq.getAnOperand() = v.getAnAccess() and\n    eq.getAnOperand().(NullLiteral).toString() = \"null\"\n  )\nselect ma, \"Potential null pointer dereference in toObjectArray\"\n",
+      "severity": "medium",
+      "semgrep_results": {
+        "status": "error",
+        "error": "               \n               \n┌─────────────┐\n│ Scan Status │\n└─────────────┘\n  Scanning 1 file with 1 Code rule:\n  Scanning 1 file.\n                \n                \n┌──────────────┐\n│ Scan Summary │\n└──────────────┘\n✅ Scan completed successfully.\n • Findings: 0 (0 blocking)\n • Rules run: 1\n • Targets scanned: 1\n • Parsed lines: ~100.0%\n • No ignore information available\nRan 1 rule on 1 file: 0 findings.\n",
+        "returncode": 2
+      },
+      "codeql_results": {
+        "status": "error",
+        "error": "CodeQL database creation failed: A fatal error occurred: Refusing to create database: '/home/ace4_sijune/test/AVR/codeql_db_3873089' exists and is not an empty directory.\nPlease specify a different location, or use the --overwrite flag to overwrite existing CodeQL databases.\n"
+      },
+      "confirmed": false
+    }
+  ],
+  "patches": [
+    {
+      "vulnerability_id": "ObjectArrayCodec.java#deserialze",
+      "patch_type": "NULL_POINTER_DEREFERENCE",
+      "patch_code": "\n// 패치: Null 검사 추가\npublic <T> T deserialze(...) {\n    // Null 검사 추가\n    if (parser == null) {\n        throw new IllegalArgumentException(\"Parser cannot be null\");\n    }\n    if (type == null) {\n        throw new IllegalArgumentException(\"Type cannot be null\");\n    }\n    \n    // 기존 코드...\n}\n",
+      "description": "패치 for NULL_POINTER_DEREFERENCE in deserialze",
+      "confidence": 0.8
+    },
+    {
+      "vulnerability_id": "ObjectArrayCodec.java#toObjectArray",
+      "patch_type": "NULL_POINTER_DEREFERENCE",
+      "patch_code": "\n// 패치: Null 검사 추가\npublic <T> T toObjectArray(...) {\n    // Null 검사 추가\n    if (parser == null) {\n        throw new IllegalArgumentException(\"Parser cannot be null\");\n    }\n    if (type == null) {\n        throw new IllegalArgumentException(\"Type cannot be null\");\n    }\n    \n    // 기존 코드...\n}\n",
+      "description": "패치 for NULL_POINTER_DEREFERENCE in toObjectArray",
+      "confidence": 0.8
+    }
+  ],
+  "status": "completed"
+}

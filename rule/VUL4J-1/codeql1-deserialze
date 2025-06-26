@@ -1,0 +1,20 @@
+/**
+ * @name 잠재적인 Null Pointer Dereference 취약점
+ * @description Detects null pointer dereference in deserialze
+ * @kind problem
+ * @problem.severity medium
+ * @id java/vuln-1-deserialze
+ */
+
+import java
+
+from Method m, MethodAccess ma, Variable v
+where
+  m.getName() = "deserialze" and
+  ma.getEnclosingCallable() = m and
+  ma.getQualifier() = v.getAnAccess() and
+  exists(EqualityTest eq | 
+    eq.getAnOperand() = v.getAnAccess() and
+    eq.getAnOperand().(NullLiteral).toString() = "null"
+  )
+select ma, "Potential null pointer dereference in deserialze"

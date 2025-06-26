@@ -1,0 +1,16 @@
+rules:
+  - id: vuln-1-deserialze
+    message: 잠재적인 Null Pointer Dereference 취약점
+    severity: MEDIUM
+    languages: [java]
+    pattern-either:
+      - pattern: |
+          public $TYPE deserialze(...) {
+            ...
+            if ($VAR == null) {
+              ...
+            }
+            ...
+            $VAR.$METHOD(...)
+            ...
+          }

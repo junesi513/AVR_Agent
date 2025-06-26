@@ -1,0 +1,38 @@
+[T 06:58:34 3875741] CodeQL CLI version 2.21.0
+[T 06:58:34 3875741] Initializing tracer.
+[T 06:58:34 3875741] Initializing tags.
+[T 06:58:34 3875741] ID set to 00000000003B239D_0000000000000001 (parent root)
+[T 06:58:34 3875741] Initializing tracer.
+[T 06:58:34 3875741] Initializing tags.
+[T 06:58:34 3875741] ID set to 00000000003B239D_0000000000000002 (parent root)
+[T 06:58:34 3875741] Warning: SEMMLE_EXEC and SEMMLE_EXECP not set. Falling back to path lookup on argv[0].
+[T 06:58:34 3875741] ==== Candidate to intercept: /opt/codeql/tools/linux64/runner-linux (canonical: /opt/codeql/tools/linux64/runner-linux) ====
+[T 06:58:34 3875741] Lua: === Intercepted call to /opt/codeql/tools/linux64/runner-linux ===
+[T 06:58:34 3875741] Executing the following tracer actions:
+[T 06:58:34 3875741] Tracer actions:
+[T 06:58:34 3875741] pre_invocations(0)
+[T 06:58:34 3875741] post_invocations(0)
+[T 06:58:34 3875741] trace_languages(1): [java]
+[T 06:58:34 3875741] Initializing tracer.
+[T 06:58:34 3875741] Initializing tags.
+[T 06:58:34 3875741] ID set to 00000000003B239D_0000000000000003 (parent 00000000003B239D_0000000000000002)
+[T 06:58:34 3875741] ==== Candidate to intercept: /opt/codeql/java/tools/autobuild.sh (canonical: /opt/codeql/java/tools/autobuild.sh) ====
+[T 06:58:34 3875741] Lua: === Intercepted call to /opt/codeql/java/tools/autobuild.sh ===
+[T 06:58:34 3875741] Executing the following tracer actions:
+[T 06:58:34 3875741] Tracer actions:
+[T 06:58:34 3875741] pre_invocations(0)
+[T 06:58:34 3875741] post_invocations(0)
+[T 06:58:34 3875741] trace_languages(1): [java]
+[T 06:58:34 3875744] Initializing tracer.
+[T 06:58:34 3875744] Initializing tags.
+[T 06:58:34 3875744] ID set to 00000000003B23A0_0000000000000001 (parent 00000000003B239D_0000000000000003)
+[T 06:58:34 3875744] ==== Candidate to intercept: /opt/codeql/tools/linux64/java/bin/java (canonical: /opt/codeql/tools/linux64/java/bin/java) ====
+[T 06:58:34 3875744] Lua: === Intercepted call to /opt/codeql/tools/linux64/java/bin/java ===
+[T 06:58:34 3875744] Executing the following tracer actions:
+[T 06:58:34 3875744] Tracer actions:
+[T 06:58:34 3875744] pre_invocations(0)
+[T 06:58:34 3875744] post_invocations(0)
+[T 06:58:34 3875744] trace_languages(1): [java]
+[T 06:58:34 3875744] Passing through -javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin to underlying JVM.
+[T 06:58:34 3875744] Passing through -Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar to underlying JVM.
+[T 06:58:35 3875744] Intercepted JVM creation with extra hidden args: ['-javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin' '-Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar' ] (result: 1, 0).
