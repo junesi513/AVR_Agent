@@ -8,7 +8,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from vulnerability_analyzer import VulnerabilityAnalyzer
+from vulnerability_analyzer import AdvancedVulnerabilityAnalyzer
 from llm_interfaces import create_llm_config_template
 
 
@@ -80,7 +80,7 @@ def main():
         print("🤖 LLM: 패턴 매칭 모드")
     
     try:
-        analyzer = VulnerabilityAnalyzer(vuln_id=args.vuln_id, llm_config=llm_config)
+        analyzer = AdvancedVulnerabilityAnalyzer(vuln_id=args.vuln_id, llm_interface=llm_config)
         result = analyzer.analyze()
         
         if result["status"] == "completed":
@@ -88,11 +88,18 @@ def main():
             confirmed_vulns = [v for v in result['vulnerabilities'] if v.get('confirmed', False)]
             unconfirmed_vulns = [v for v in result['vulnerabilities'] if not v.get('confirmed', False)]
             
+            # 패치 검증 결과 분석
+            validated_patches = result.get('validated_patches', [])
+            successful_patches = [p for p in validated_patches if p.get('validation_status') == 'success']
+            failed_patches = [p for p in validated_patches if p.get('validation_status') != 'success']
+            
             print("\n✅ 분석 완료!")
             print(f"🔍 총 발견된 취약점: {len(result['vulnerabilities'])}개")
             print(f"  ✓ 검증된 취약점: {len(confirmed_vulns)}개")
             print(f"  ⚠️ 미검증 취약점: {len(unconfirmed_vulns)}개")
             print(f"🔧 생성된 패치: {len(result['patches'])}개")
+            print(f"✅ 검증된 패치: {len(successful_patches)}개")
+            print(f"❌ 검증 실패 패치: {len(failed_patches)}개")
             
             # 검증된 취약점 우선 표시
             if confirmed_vulns:
@@ -111,6 +118,20 @@ def main():
                         print(f"     • {v['type']}: {v['description']}")
             elif unconfirmed_vulns:
                 print(f"\n⚠️ {len(unconfirmed_vulns)}개의 미검증 취약점이 있습니다. (로그 파일에서 확인)")
+            
+            # 패치 검증 결과 표시
+            if successful_patches:
+                print("\n🎯 성공적으로 검증된 패치:")
+                for i, patch in enumerate(successful_patches[:3], 1):  # 상위 3개만 표시
+                    iterations = patch.get('validation_iterations', 'N/A')
+                    print(f"  {i}. {patch['vulnerability_id']} - {iterations}회 반복으로 검증 완료 ✅")
+            
+            if failed_patches:
+                print("\n⚠️ 검증 실패한 패치:")
+                for i, patch in enumerate(failed_patches[:3], 1):  # 상위 3개만 표시
+                    status = patch.get('validation_status', 'unknown')
+                    iterations = patch.get('validation_iterations', 'N/A')
+                    print(f"  {i}. {patch['vulnerability_id']} - {status} ({iterations}회 시도)")
             
             # Rule 파일 경로 출력 (새로운 구조 반영)
             rule_dir = Path(f"./rule/VUL4J-{args.vuln_id}")

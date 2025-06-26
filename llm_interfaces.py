@@ -12,6 +12,10 @@ from typing import Dict, List, Optional, Any
 from abc import ABC, abstractmethod
 from prompts import PromptManager
 
+def get_response_logger():
+    """LLM 응답 전용 로거 반환"""
+    return logging.getLogger('llm_response')
+
 
 class LLMInterface(ABC):
     """LLM 인터페이스 추상 클래스"""
@@ -39,6 +43,8 @@ class OpenAIGPTInterface(LLMInterface):
     
     def generate_response(self, prompt: str, **kwargs) -> str:
         """GPT API를 사용한 응답 생성"""
+        response_logger = get_response_logger()
+        
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
@@ -54,11 +60,31 @@ class OpenAIGPTInterface(LLMInterface):
             "max_tokens": kwargs.get("max_tokens", 2000)
         }
         
+        response_logger.info(f"=== GPT API 호출 시작 ===")
+        response_logger.info(f"모델: {self.model}")
+        response_logger.info(f"온도: {self.temperature}")
+        response_logger.info(f"프롬프트 (일부): {prompt[:200]}...")
+        
         try:
             response = requests.post(self.base_url, headers=headers, json=data, timeout=30)
             response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
+            
+            result = response.json()
+            generated_content = result["choices"][0]["message"]["content"]
+            
+            response_logger.info(f"GPT 응답 성공")
+            response_logger.info(f"응답 길이: {len(generated_content)} 문자")
+            response_logger.info(f"응답 내용 (일부): {generated_content[:300]}...")
+            
+            # 전체 응답을 별도로 로깅
+            if len(generated_content) < 1000:
+                response_logger.info(f"전체 응답: {generated_content}")
+            else:
+                response_logger.info(f"응답이 너무 길어 일부만 표시됨 (총 {len(generated_content)} 문자)")
+            
+            return generated_content
         except Exception as e:
+            response_logger.error(f"GPT API 호출 실패: {str(e)}")
             self.logger.error(f"GPT API 호출 실패: {str(e)}")
             return ""
     
@@ -71,35 +97,127 @@ class OpenAIGPTInterface(LLMInterface):
         
         response = self.generate_response(prompt)
         
+        # LLM 응답 전체를 별도 파일에 저장
+        self._save_detailed_response(func_name, response)
+        
         try:
-            # JSON 파싱 시도
-            if response.strip().startswith('{'):
-                result = json.loads(response)
+            # JSON 부분 추출 개선
+            json_content = self._extract_json_from_response(response)
+            if json_content:
+                result = json.loads(json_content)
                 if result.get("vulnerabilities"):
                     return {
                         "function": func_name,
                         "vulnerabilities": result["vulnerabilities"],
                         "analysis_method": "llm_gpt",
-                        "severity": max(v.get("severity", "medium") for v in result["vulnerabilities"])
+                        "severity": max(v.get("severity", "medium") for v in result["vulnerabilities"]),
+                        "detailed_analysis": response,  # 전체 응답 포함
+                        "analysis_summary": self._extract_analysis_summary(response)
                     }
-        except json.JSONDecodeError:
-            self.logger.error(f"GPT 응답 JSON 파싱 실패: {response}")
+        except json.JSONDecodeError as e:
+            self.logger.error(f"GPT 응답 JSON 파싱 실패: {e}")
+            self.logger.error(f"응답 내용: {response[:500]}...")
         
         return None
+    
+    def _save_detailed_response(self, func_name: str, response: str):
+        """LLM의 상세한 응답을 별도 파일에 저장"""
+        try:
+            from pathlib import Path
+            import datetime
+            
+            # 응답 저장 디렉토리 생성
+            response_dir = Path("log/llm_detailed_responses")
+            response_dir.mkdir(parents=True, exist_ok=True)
+            
+            # 타임스탬프 생성
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # 파일명 생성
+            filename = f"{func_name}_{timestamp}_gpt.txt"
+            filepath = response_dir / filename
+            
+            # 응답 저장
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(f"=== LLM 상세 분석 결과 (GPT) ===\n")
+                f.write(f"함수명: {func_name}\n")
+                f.write(f"시간: {datetime.datetime.now().isoformat()}\n")
+                f.write(f"모델: {self.model}\n")
+                f.write(f"응답 길이: {len(response)} 문자\n")
+                f.write("=" * 50 + "\n\n")
+                f.write(response)
+            
+            self.logger.info(f"LLM 상세 응답 저장됨: {filepath}")
+            
+        except Exception as e:
+            self.logger.error(f"LLM 응답 저장 실패: {e}")
+    
+    def _extract_json_from_response(self, response: str) -> Optional[str]:
+        """응답에서 JSON 부분을 추출"""
+        try:
+            # ```json 코드 블록에서 추출
+            if "```json" in response:
+                start = response.find("```json") + 7
+                end = response.find("```", start)
+                if end > start:
+                    return response[start:end].strip()
+            
+            # { } 괄호로 JSON 추출
+            start_idx = response.find('{')
+            if start_idx >= 0:
+                brace_count = 0
+                for i, char in enumerate(response[start_idx:], start_idx):
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            return response[start_idx:i+1]
+            
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"JSON 추출 실패: {e}")
+            return None
+    
+    def _extract_analysis_summary(self, response: str) -> str:
+        """응답에서 분석 요약 추출"""
+        try:
+            # JSON 이외의 설명 부분 추출
+            lines = response.split('\n')
+            summary_lines = []
+            
+            for line in lines:
+                line = line.strip()
+                if (line and 
+                    not line.startswith('{') and 
+                    not line.startswith('}') and 
+                    not line.startswith('```') and
+                    not line.startswith('"') and
+                    len(line) > 10):
+                    summary_lines.append(line)
+            
+            return '\n'.join(summary_lines[:5])  # 처음 5줄만
+            
+        except Exception as e:
+            self.logger.error(f"분석 요약 추출 실패: {e}")
+            return "분석 요약 추출 실패"
 
 
 class GeminiInterface(LLMInterface):
     """Google Gemini 인터페이스"""
     
-    def __init__(self, api_key: str, model: str = "gemini-pro", temperature: float = 0.1):
+    def __init__(self, api_key: str, model: str = "gemini-1.5-flash", temperature: float = 0.1):
         self.api_key = api_key
         self.model = model
         self.temperature = temperature
-        self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        self.base_url = f"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent"
         self.logger = logging.getLogger(__name__)
     
     def generate_response(self, prompt: str, **kwargs) -> str:
         """Gemini API를 사용한 응답 생성"""
+        response_logger = get_response_logger()
+        
         headers = {
             "Content-Type": "application/json"
         }
@@ -122,15 +240,35 @@ class GeminiInterface(LLMInterface):
             }
         }
         
+        response_logger.info(f"=== Gemini API 호출 시작 ===")
+        response_logger.info(f"모델: {self.model}")
+        response_logger.info(f"온도: {self.temperature}")
+        response_logger.info(f"프롬프트 (일부): {prompt[:200]}...")
+        
         try:
             response = requests.post(self.base_url, headers=headers, params=params, json=data, timeout=30)
             response.raise_for_status()
             result = response.json()
             
             if "candidates" in result and result["candidates"]:
-                return result["candidates"][0]["content"]["parts"][0]["text"]
-            return ""
+                generated_content = result["candidates"][0]["content"]["parts"][0]["text"]
+                
+                response_logger.info(f"Gemini 응답 성공")
+                response_logger.info(f"응답 길이: {len(generated_content)} 문자")
+                response_logger.info(f"응답 내용 (일부): {generated_content[:300]}...")
+                
+                # 전체 응답을 별도로 로깅
+                if len(generated_content) < 1000:
+                    response_logger.info(f"전체 응답: {generated_content}")
+                else:
+                    response_logger.info(f"응답이 너무 길어 일부만 표시됨 (총 {len(generated_content)} 문자)")
+                
+                return generated_content
+            else:
+                response_logger.warning("Gemini 응답에 candidates가 없음")
+                return ""
         except Exception as e:
+            response_logger.error(f"Gemini API 호출 실패: {str(e)}")
             self.logger.error(f"Gemini API 호출 실패: {str(e)}")
             return ""
     
@@ -143,20 +281,111 @@ class GeminiInterface(LLMInterface):
         
         response = self.generate_response(prompt)
         
+        # LLM 응답 전체를 별도 파일에 저장
+        self._save_detailed_response(func_name, response)
+        
         try:
-            if response.strip().startswith('{'):
-                result = json.loads(response)
+            # JSON 부분 추출 개선
+            json_content = self._extract_json_from_response(response)
+            if json_content:
+                result = json.loads(json_content)
                 if result.get("vulnerabilities"):
                     return {
                         "function": func_name,
                         "vulnerabilities": result["vulnerabilities"],
                         "analysis_method": "llm_gemini",
-                        "severity": max(v.get("severity", "medium") for v in result["vulnerabilities"])
+                        "severity": max(v.get("severity", "medium") for v in result["vulnerabilities"]),
+                        "detailed_analysis": response,  # 전체 응답 포함
+                        "analysis_summary": self._extract_analysis_summary(response)
                     }
-        except json.JSONDecodeError:
-            self.logger.error(f"Gemini 응답 JSON 파싱 실패: {response}")
+        except json.JSONDecodeError as e:
+            self.logger.error(f"Gemini 응답 JSON 파싱 실패: {e}")
+            self.logger.error(f"응답 내용: {response[:500]}...")
         
         return None
+    
+    def _save_detailed_response(self, func_name: str, response: str):
+        """LLM의 상세한 응답을 별도 파일에 저장"""
+        try:
+            from pathlib import Path
+            import datetime
+            
+            # 응답 저장 디렉토리 생성
+            response_dir = Path("log/llm_detailed_responses")
+            response_dir.mkdir(parents=True, exist_ok=True)
+            
+            # 타임스탬프 생성
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # 파일명 생성
+            filename = f"{func_name}_{timestamp}_gemini.txt"
+            filepath = response_dir / filename
+            
+            # 응답 저장
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(f"=== LLM 상세 분석 결과 (Gemini) ===\n")
+                f.write(f"함수명: {func_name}\n")
+                f.write(f"시간: {datetime.datetime.now().isoformat()}\n")
+                f.write(f"모델: {self.model}\n")
+                f.write(f"응답 길이: {len(response)} 문자\n")
+                f.write("=" * 50 + "\n\n")
+                f.write(response)
+            
+            self.logger.info(f"LLM 상세 응답 저장됨: {filepath}")
+            
+        except Exception as e:
+            self.logger.error(f"LLM 응답 저장 실패: {e}")
+    
+    def _extract_json_from_response(self, response: str) -> Optional[str]:
+        """응답에서 JSON 부분을 추출"""
+        try:
+            # ```json 코드 블록에서 추출
+            if "```json" in response:
+                start = response.find("```json") + 7
+                end = response.find("```", start)
+                if end > start:
+                    return response[start:end].strip()
+            
+            # { } 괄호로 JSON 추출
+            start_idx = response.find('{')
+            if start_idx >= 0:
+                brace_count = 0
+                for i, char in enumerate(response[start_idx:], start_idx):
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            return response[start_idx:i+1]
+            
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"JSON 추출 실패: {e}")
+            return None
+    
+    def _extract_analysis_summary(self, response: str) -> str:
+        """응답에서 분석 요약 추출"""
+        try:
+            # JSON 이외의 설명 부분 추출
+            lines = response.split('\n')
+            summary_lines = []
+            
+            for line in lines:
+                line = line.strip()
+                if (line and 
+                    not line.startswith('{') and 
+                    not line.startswith('}') and 
+                    not line.startswith('```') and
+                    not line.startswith('"') and
+                    len(line) > 10):
+                    summary_lines.append(line)
+            
+            return '\n'.join(summary_lines[:5])  # 처음 5줄만
+            
+        except Exception as e:
+            self.logger.error(f"분석 요약 추출 실패: {e}")
+            return "분석 요약 추출 실패"
 
 
 class OllamaInterface(LLMInterface):
@@ -171,6 +400,8 @@ class OllamaInterface(LLMInterface):
     
     def generate_response(self, prompt: str, **kwargs) -> str:
         """Ollama API를 사용한 응답 생성"""
+        response_logger = get_response_logger()
+        
         data = {
             "model": self.model,
             "prompt": prompt,
@@ -181,11 +412,32 @@ class OllamaInterface(LLMInterface):
             }
         }
         
+        response_logger.info(f"=== Ollama API 호출 시작 ===")
+        response_logger.info(f"모델: {self.model}")
+        response_logger.info(f"온도: {self.temperature}")
+        response_logger.info(f"서버: {self.base_url}")
+        response_logger.info(f"프롬프트 (일부): {prompt[:200]}...")
+        
         try:
             response = requests.post(self.generate_url, json=data, timeout=60)
             response.raise_for_status()
-            return response.json().get("response", "")
+            
+            result = response.json()
+            generated_content = result.get("response", "")
+            
+            response_logger.info(f"Ollama 응답 성공")
+            response_logger.info(f"응답 길이: {len(generated_content)} 문자")
+            response_logger.info(f"응답 내용 (일부): {generated_content[:300]}...")
+            
+            # 전체 응답을 별도로 로깅
+            if len(generated_content) < 1000:
+                response_logger.info(f"전체 응답: {generated_content}")
+            else:
+                response_logger.info(f"응답이 너무 길어 일부만 표시됨 (총 {len(generated_content)} 문자)")
+            
+            return generated_content
         except Exception as e:
+            response_logger.error(f"Ollama API 호출 실패: {str(e)}")
             self.logger.error(f"Ollama API 호출 실패: {str(e)}")
             return ""
     
@@ -198,60 +450,159 @@ class OllamaInterface(LLMInterface):
         
         response = self.generate_response(prompt)
         
+        # LLM 응답 전체를 별도 파일에 저장
+        self._save_detailed_response(func_name, response)
+        
         try:
-            # JSON 부분만 추출
-            start_idx = response.find('{')
-            end_idx = response.rfind('}') + 1
-            
-            if start_idx >= 0 and end_idx > start_idx:
-                json_str = response[start_idx:end_idx]
-                result = json.loads(json_str)
-                
+            # JSON 부분 추출 개선
+            json_content = self._extract_json_from_response(response)
+            if json_content:
+                result = json.loads(json_content)
                 if result.get("vulnerabilities"):
                     return {
                         "function": func_name,
                         "vulnerabilities": result["vulnerabilities"],
                         "analysis_method": "llm_ollama",
-                        "severity": max(v.get("severity", "medium") for v in result["vulnerabilities"])
+                        "severity": max(v.get("severity", "medium") for v in result["vulnerabilities"]),
+                        "detailed_analysis": response,  # 전체 응답 포함
+                        "analysis_summary": self._extract_analysis_summary(response)
                     }
-        except (json.JSONDecodeError, ValueError):
-            self.logger.error(f"Ollama 응답 JSON 파싱 실패: {response}")
+        except (json.JSONDecodeError, ValueError) as e:
+            self.logger.error(f"Ollama 응답 JSON 파싱 실패: {e}")
+            self.logger.error(f"응답 내용: {response[:500]}...")
         
         return None
+    
+    def _save_detailed_response(self, func_name: str, response: str):
+        """LLM의 상세한 응답을 별도 파일에 저장"""
+        try:
+            from pathlib import Path
+            import datetime
+            
+            # 응답 저장 디렉토리 생성
+            response_dir = Path("log/llm_detailed_responses")
+            response_dir.mkdir(parents=True, exist_ok=True)
+            
+            # 타임스탬프 생성
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # 파일명 생성
+            filename = f"{func_name}_{timestamp}_ollama.txt"
+            filepath = response_dir / filename
+            
+            # 응답 저장
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(f"=== LLM 상세 분석 결과 (Ollama) ===\n")
+                f.write(f"함수명: {func_name}\n")
+                f.write(f"시간: {datetime.datetime.now().isoformat()}\n")
+                f.write(f"모델: {self.model}\n")
+                f.write(f"응답 길이: {len(response)} 문자\n")
+                f.write("=" * 50 + "\n\n")
+                f.write(response)
+            
+            self.logger.info(f"LLM 상세 응답 저장됨: {filepath}")
+            
+        except Exception as e:
+            self.logger.error(f"LLM 응답 저장 실패: {e}")
+    
+    def _extract_json_from_response(self, response: str) -> Optional[str]:
+        """응답에서 JSON 부분을 추출"""
+        try:
+            # ```json 코드 블록에서 추출
+            if "```json" in response:
+                start = response.find("```json") + 7
+                end = response.find("```", start)
+                if end > start:
+                    return response[start:end].strip()
+            
+            # { } 괄호로 JSON 추출
+            start_idx = response.find('{')
+            if start_idx >= 0:
+                brace_count = 0
+                for i, char in enumerate(response[start_idx:], start_idx):
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            return response[start_idx:i+1]
+            
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"JSON 추출 실패: {e}")
+            return None
+    
+    def _extract_analysis_summary(self, response: str) -> str:
+        """응답에서 분석 요약 추출"""
+        try:
+            # JSON 이외의 설명 부분 추출
+            lines = response.split('\n')
+            summary_lines = []
+            
+            for line in lines:
+                line = line.strip()
+                if (line and 
+                    not line.startswith('{') and 
+                    not line.startswith('}') and 
+                    not line.startswith('```') and
+                    not line.startswith('"') and
+                    len(line) > 10):
+                    summary_lines.append(line)
+            
+            return '\n'.join(summary_lines[:5])  # 처음 5줄만
+            
+        except Exception as e:
+            self.logger.error(f"분석 요약 추출 실패: {e}")
+            return "분석 요약 추출 실패"
 
 
 class LLMFactory:
     """LLM 인터페이스 팩토리"""
     
     @staticmethod
-    def create_llm(llm_type: str, **kwargs) -> LLMInterface:
+    def create_llm(config, **kwargs) -> LLMInterface:
         """LLM 인터페이스 생성"""
-        if llm_type.lower() == "gpt" or llm_type.lower() == "openai":
-            api_key = kwargs.get("api_key") or os.getenv("OPENAI_API_KEY")
+        # config가 문자열인 경우 (기존 방식)
+        if isinstance(config, str):
+            llm_type = config
+            provider_config = kwargs
+        else:
+            # config가 dict인 경우 (새로운 방식)
+            llm_type = config.get("provider", "none")
+            provider_config = config
+            provider_config.update(kwargs)  # kwargs로 전달된 추가 설정 병합
+        
+        if llm_type.lower() in ["gpt", "openai"]:
+            api_key = provider_config.get("api_key") or os.getenv("OPENAI_API_KEY")
             if not api_key:
                 raise ValueError("OpenAI API key가 필요합니다.")
             return OpenAIGPTInterface(
                 api_key=api_key,
-                model=kwargs.get("model", "gpt-4"),
-                temperature=kwargs.get("temperature", 0.1)
+                model=provider_config.get("model", "gpt-4"),
+                temperature=provider_config.get("temperature", 0.1)
             )
         
         elif llm_type.lower() == "gemini":
-            api_key = kwargs.get("api_key") or os.getenv("GEMINI_API_KEY")
+            api_key = provider_config.get("api_key") or os.getenv("GEMINI_API_KEY")
             if not api_key:
                 raise ValueError("Gemini API key가 필요합니다.")
             return GeminiInterface(
                 api_key=api_key,
-                model=kwargs.get("model", "gemini-pro"),
-                temperature=kwargs.get("temperature", 0.1)
+                model=provider_config.get("model", "gemini-1.5-flash"),
+                temperature=provider_config.get("temperature", 0.1)
             )
         
-        elif llm_type.lower() == "ollama" or llm_type.lower() == "qwen":
+        elif llm_type.lower() in ["ollama", "qwen"]:
             return OllamaInterface(
-                base_url=kwargs.get("base_url", "http://localhost:11434"),
-                model=kwargs.get("model", "qwen:7b"),
-                temperature=kwargs.get("temperature", 0.1)
+                base_url=provider_config.get("base_url", "http://localhost:11434"),
+                model=provider_config.get("model", "qwen:7b"),
+                temperature=provider_config.get("temperature", 0.1)
             )
+        
+        elif llm_type.lower() in ["none", ""]:
+            # LLM 없이 실행
+            return None
         
         else:
             raise ValueError(f"지원하지 않는 LLM 타입: {llm_type}")
@@ -273,7 +624,7 @@ def create_llm_config_template():
             {
                 "name": "gemini",
                 "type": "gemini", 
-                "model": "gemini-pro",
+                "model": "gemini-1.5-flash",
                 "api_key": "your_gemini_api_key_here",
                 "temperature": 0.1,
                 "enabled": False
@@ -294,33 +645,4 @@ def create_llm_config_template():
         json.dump(config, f, indent=2, ensure_ascii=False)
     
     print("LLM 설정 파일 (llm_config.json) 생성됨")
-    print("필요한 API 키를 입력하고 enabled를 true로 설정하세요.")
-
-
-if __name__ == "__main__":
-    # 설정 파일 생성
-    create_llm_config_template()
-    
-    # 테스트 예시
-    print("\n=== LLM 인터페이스 테스트 ===")
-    
-    # Ollama 테스트 (로컬에서 실행 중인 경우)
-    try:
-        ollama_llm = LLMFactory.create_llm("ollama", model="qwen:7b")
-        test_func = {
-            "name": "deserialze",
-            "full_signature": "public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName)",
-            "modifiers": ["public"],
-            "return_type": "<T> T",
-            "parameters": ["DefaultJSONParser parser", "Type type", "Object fieldName"]
-        }
-        
-        result = ollama_llm.generate_vulnerability_hypothesis(test_func)
-        if result:
-            print("✅ Ollama 테스트 성공")
-            print(f"발견된 취약점: {len(result['vulnerabilities'])}개")
-        else:
-            print("⚠️ Ollama 테스트 - 취약점 없음")
-            
-    except Exception as e:
-        print(f"❌ Ollama 테스트 실패: {str(e)}") 
+    print("필요한 API 키를 입력하고 enabled를 true로 설정하세요.") 

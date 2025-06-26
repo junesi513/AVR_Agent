@@ -1,20 +1,48 @@
 /**
- * @name 잠재적인 Null Pointer Dereference 취약점
- * @description Detects null pointer dereference in deserialze
+ * @name DataFlow Analysis for deserialze
+ * @description The `deserialize` method uses a JSON parser without sufficient input validation, potentially leading to unsafe deserialization vulnerabilities.  This is especially risky if the input JSON contains malicious code that can be executed during deserialization.
  * @kind problem
- * @problem.severity medium
- * @id java/vuln-1-deserialze
+ * @problem.severity high
+ * @id java/vuln-1-deserialze-dataflow
  */
 
 import java
+import semmle.code.java.dataflow.DataFlow
 
-from Method m, MethodAccess ma, Variable v
-where
-  m.getName() = "deserialze" and
-  ma.getEnclosingCallable() = m and
-  ma.getQualifier() = v.getAnAccess() and
-  exists(EqualityTest eq | 
-    eq.getAnOperand() = v.getAnAccess() and
-    eq.getAnOperand().(NullLiteral).toString() = "null"
-  )
-select ma, "Potential null pointer dereference in deserialze"
+class VulnSource extends DataFlow::Node {
+  VulnSource() {
+    this.asParameter().getName().matches("parser")
+  }
+}
+
+class VulnSink extends DataFlow::Node {
+  VulnSink() {
+    exists(MethodAccess ma |
+      ma.getMethod().getName().matches("parseArray") and
+      this.asExpr() = ma
+    )
+  }
+}
+
+
+
+class VulnConfig extends DataFlow::Configuration {
+  VulnConfig() { this = "VulnConfig" }
+  
+  override predicate isSource(DataFlow::Node source) {
+    source instanceof VulnSource
+  }
+  
+  override predicate isSink(DataFlow::Node sink) {
+    sink instanceof VulnSink
+  }
+  
+  override predicate isBarrier(DataFlow::Node node) {
+    none()
+  }
+}
+
+from VulnConfig config, DataFlow::Node source, DataFlow::Node sink
+where config.hasFlow(source, sink)
+select sink, "DataFlow: Unsafe Deserialization from $@ to $@",
+       source, "source", sink, "sink"

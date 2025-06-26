@@ -1,16 +1,11 @@
 rules:
   - id: vuln-1-toobjectarray
-    message: 잠재적인 Null Pointer Dereference 취약점
-    severity: MEDIUM
+    message: The method `toObjectArray` deserializes JSON data using a potentially vulnerable JSON parser.  If the input `array` contains malicious data, it could lead to arbitrary code execution or other security vulnerabilities depending on the underlying JSON library used by `DefaultJSONParser`.
+    severity: HIGH
     languages: [java]
     pattern-either:
-      - pattern: |
-          public $TYPE toObjectArray(...) {
-            ...
-            if ($VAR == null) {
-              ...
-            }
-            ...
-            $VAR.$METHOD(...)
-            ...
-          }
+    metadata:
+      category: security
+      technology: [java]
+      cwe: "CWE-502"
+      confidence: HIGH

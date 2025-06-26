@@ -1,16 +1,11 @@
 rules:
   - id: vuln-1-deserialze
-    message: 잠재적인 Null Pointer Dereference 취약점
-    severity: MEDIUM
+    message: The `deserialize` method uses a JSON parser without sufficient input validation, potentially leading to unsafe deserialization vulnerabilities.  This is especially risky if the input JSON contains malicious code that can be executed during deserialization.
+    severity: HIGH
     languages: [java]
     pattern-either:
-      - pattern: |
-          public $TYPE deserialze(...) {
-            ...
-            if ($VAR == null) {
-              ...
-            }
-            ...
-            $VAR.$METHOD(...)
-            ...
-          }
+    metadata:
+      category: security
+      technology: [java]
+      cwe: "CWE-502"
+      confidence: HIGH
