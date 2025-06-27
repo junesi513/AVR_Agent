@@ -1,0 +1,51 @@
+[T 10:00:56 3945984] CodeQL CLI version 2.21.0
+[T 10:00:56 3945984] Initializing tracer.
+[T 10:00:56 3945984] Initializing tags.
+[T 10:00:56 3945984] ID set to 00000000003C3600_0000000000000001 (parent root)
+[T 10:00:56 3945984] Initializing tracer.
+[T 10:00:56 3945984] Initializing tags.
+[T 10:00:56 3945984] ID set to 00000000003C3600_0000000000000002 (parent root)
+[T 10:00:56 3945984] Warning: SEMMLE_EXEC and SEMMLE_EXECP not set. Falling back to path lookup on argv[0].
+[T 10:00:56 3945984] ==== Candidate to intercept: /opt/codeql/tools/linux64/runner-linux (canonical: /opt/codeql/tools/linux64/runner-linux) ====
+[T 10:00:56 3945984] Lua: === Intercepted call to /opt/codeql/tools/linux64/runner-linux ===
+[T 10:00:56 3945984] Executing the following tracer actions:
+[T 10:00:56 3945984] Tracer actions:
+[T 10:00:56 3945984] pre_invocations(0)
+[T 10:00:56 3945984] post_invocations(0)
+[T 10:00:56 3945984] trace_languages(1): [java]
+[T 10:00:56 3945984] Initializing tracer.
+[T 10:00:56 3945984] Initializing tags.
+[T 10:00:56 3945984] ID set to 00000000003C3600_0000000000000003 (parent 00000000003C3600_0000000000000002)
+[T 10:00:56 3945984] ==== Candidate to intercept: javac (canonical: /usr/bin/javac) ====
+[T 10:00:56 3945984] Lua: === Intercepted call to /usr/bin/javac ===
+[T 10:00:56 3945984] Executing the following tracer actions:
+[T 10:00:56 3945984] Tracer actions:
+[T 10:00:56 3945984] pre_invocations(0)
+[T 10:00:56 3945984] post_invocations(0)
+[T 10:00:56 3945984] trace_languages(1): [java]
+[T 10:00:56 3945984] Passing through -javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin to underlying JVM.
+[T 10:00:56 3945984] Passing through -Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar to underlying JVM.
+[T 10:00:56 3945984] Intercepted JVM creation with extra hidden args: ['-javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin' '-Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar' ] (result: 1, 0).
+[T 10:00:57 3946050] Initializing tracer.
+[T 10:00:57 3946050] Initializing tags.
+[T 10:00:57 3946050] ID set to 00000000003C3642_0000000000000001 (parent 00000000003C3600_0000000000000003)
+[T 10:00:57 3946050] ==== Candidate to intercept: /usr/lib/jvm/java-17-openjdk-amd64/lib/jspawnhelper (canonical: /usr/lib/jvm/java-17-openjdk-amd64/lib/jspawnhelper) ====
+[T 10:00:57 3946050] Lua: === Intercepted call to /usr/lib/jvm/java-17-openjdk-amd64/lib/jspawnhelper ===
+[T 10:00:57 3946050] Executing the following tracer actions:
+[T 10:00:57 3946050] Tracer actions:
+[T 10:00:57 3946050] pre_invocations(0)
+[T 10:00:57 3946050] post_invocations(0)
+[T 10:00:57 3946050] trace_languages(1): [java]
+[T 10:00:57 3946050] Initializing tracer.
+[T 10:00:57 3946050] Initializing tags.
+[T 10:00:57 3946050] ID set to 00000000003C3642_0000000000000002 (parent 00000000003C3642_0000000000000001)
+[T 10:00:57 3946050] ==== Candidate to intercept: /usr/lib/jvm/java-17-openjdk-amd64/bin/java (canonical: /usr/lib/jvm/java-17-openjdk-amd64/bin/java) ====
+[T 10:00:57 3946050] Lua: === Intercepted call to /usr/lib/jvm/java-17-openjdk-amd64/bin/java ===
+[T 10:00:57 3946050] Executing the following tracer actions:
+[T 10:00:57 3946050] Tracer actions:
+[T 10:00:57 3946050] pre_invocations(0)
+[T 10:00:57 3946050] post_invocations(0)
+[T 10:00:57 3946050] trace_languages(1): [java]
+[T 10:00:57 3946050] Passing through -javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin to underlying JVM.
+[T 10:00:57 3946050] Passing through -Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar to underlying JVM.
+[T 10:00:57 3946050] Intercepted JVM creation with extra hidden args: ['-javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin' '-Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar' ] (result: 1, 0).

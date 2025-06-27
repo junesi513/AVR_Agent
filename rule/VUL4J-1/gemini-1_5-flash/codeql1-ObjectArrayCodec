@@ -1,0 +1,14 @@
+/**
+ * @name 간단한 메서드 탐지 - ObjectArrayCodec
+ * @description Detects ObjectArrayCodec method calls
+ * @kind problem
+ * @problem.severity high
+ * @id java/vuln-1-ObjectArrayCodec-simple
+ */
+
+import java
+
+from Method m
+where 
+  m.getName() = "ObjectArrayCodec"
+select m, "Found ObjectArrayCodec method at " + m.getLocation().toString()

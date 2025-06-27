@@ -1,0 +1,517 @@
+2025-06-27 10:55:52,030 - CodeQL-gemini-1_5-flash - INFO - === CodeQL 분석 시작 ===
+2025-06-27 10:55:52,030 - CodeQL-gemini-1_5-flash - INFO - 규칙 파일: rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec
+2025-06-27 10:55:52,030 - CodeQL-gemini-1_5-flash - INFO - 대상 경로: benchmark/Java/VUL4J/VUL4J-1
+2025-06-27 10:55:52,030 - CodeQL-gemini-1_5-flash - INFO - 데이터베이스 경로: None
+2025-06-27 10:55:52,030 - CodeQL-gemini-1_5-flash - INFO - 새 CodeQL DB 생성: ./codeql/codeql_db_239797
+2025-06-27 10:55:52,030 - CodeQL-gemini-1_5-flash - INFO - DB 생성 명령어: codeql database create ./codeql/codeql_db_239797 --language=java --source-root=./maven-project --overwrite
+2025-06-27 10:56:08,229 - CodeQL-gemini-1_5-flash - INFO - DB 생성 반환 코드: 0
+2025-06-27 10:56:08,230 - CodeQL-gemini-1_5-flash - INFO - DB 생성 출력: [2025-06-27 10:55:54] [build-stdout] [2025-06-27 10:55:54] Build directory is .
+[2025-06-27 10:55:54] [build-stdout] [2025-06-27 10:55:54] [autobuild] > mvn clean package -f pom.xml -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Dspotbugs.skip -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true -Dspotless.check.skip=true
+[2025-06-27 10:55:54] [build-stdout] [2025-06-27 10:55:54] [autobuild] Apache Maven 3.6.3
+[2025-06-27 10:55:54] [build-stdout] [2025-06-27 10:55:54] [autobuild] Maven home: /usr/share/maven
+[2025-06-27 10:55:54] [build-stdout] [2025-06-27 10:55:54] [autobuild] Java version: 11.0.27, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+[2025-06-27 10:55:54] [build-stdout] [2025-06-27 10:55:54] [autobuild] Default locale: en_US, platform encoding: UTF-8
+[2025-06-27 10:55:54] [build-stdout] [2025-06-27 10:55:54] [autobuild] OS name: "linux", version: "6.8.0-58-generic", arch: "amd64", family: "unix"
+[2025-06-27 10:55:55] [build-stdout] [2025-06-27 10:55:55] [autobuild] [INFO] Error stacktraces are turned on.
+[2025-06-27 10:55:55] [build-stdout] [2025-06-27 10:55:55] [autobuild] [INFO] Scanning for projects...
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] Some problems were encountered while building the effective model for com.example:vuln-analysis:jar:1.0.0
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] 'dependencies.dependency.systemPath' for com.alibaba:fastjson:jar should not point at files within the project directory, ${project.basedir}/../fastjson.jar will be unresolvable by dependent projects @ line 25, column 25
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [WARNING] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] ---------------------< com.example:vuln-analysis >----------------------
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] Building vuln-analysis 1.0.0
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] --------------------------------[ jar ]---------------------------------
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ vuln-analysis ---
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] Deleting /home/ace4_sijune/test/AVR/maven-project/target
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ vuln-analysis ---
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/main/resources
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] 
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ vuln-analysis ---
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] Changes detected - recompiling the module!
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] [INFO] Compiling 1 source file to /home/ace4_sijune/test/AVR/maven-project/target/classes
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] WARNING: An illegal reflective access operation has occurred
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] WARNING: Illegal reflective access by com.semmle.extractor.java.interceptors.JavacToolInterceptor to method com.sun.tools.javac.file.PathFileObject$SimpleFileObject.toUri()
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] WARNING: Please consider reporting this to the maintainers of com.semmle.extractor.java.interceptors.JavacToolInterceptor
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+[2025-06-27 10:55:56] [build-stdout] [2025-06-27 10:55:56] [autobuild] WARNING: All illegal access operations will be denied in a future release
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] 
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ vuln-analysis ---
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/test/resources
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] 
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ vuln-analysis ---
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] No sources to compile
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] 
+[2025-06-27 10:56:01] [build-stdout] [2025-06-27 10:56:01] [autobuild] [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ vuln-analysis ---
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] Tests are skipped.
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] 
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ vuln-analysis ---
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] Building jar: /home/ace4_sijune/test/AVR/maven-project/target/vuln-analysis-1.0.0.jar
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] BUILD SUCCESS
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] Total time:  6.190 s
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] Finished at: 2025-06-27T10:56:02+09:00
+[2025-06-27 10:56:02] [build-stdout] [2025-06-27 10:56:02] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:56:04] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:04] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:04] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/xml/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index15525548757759960382.list]
+[2025-06-27 10:56:05] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:05] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:05] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/properties/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index9226686568665317510.list]
+
+2025-06-27 10:56:08,230 - CodeQL-gemini-1_5-flash - WARNING - DB 생성 에러: Initializing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running build command: [/opt/codeql/java/tools/autobuild.sh]
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/autobuild.sh]
+Finalizing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running pre-finalize script /opt/codeql/java/tools/pre-finalize.sh in /home/ace4_sijune/test/AVR/maven-project.
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/pre-finalize.sh]
+Running TRAP import for CodeQL database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797...
+Importing TRAP files
+Merging relations
+Finished writing database (relations: 269.88 KiB; string pool: 2.41 MiB).
+TRAP import complete (1.6s).
+Finished zipping source archive (3.50 KiB).
+Successfully created database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+
+2025-06-27 10:56:08,231 - CodeQL-gemini-1_5-flash - INFO - 쿼리 파일 확장자 추가: rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec -> rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql
+2025-06-27 10:56:08,231 - CodeQL-gemini-1_5-flash - INFO - qlpack.yml 생성됨: rule/VUL4J-1/gemini-1_5-flash/qlpack.yml
+2025-06-27 10:56:08,232 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 명령어: codeql query run codeql1-ObjectArrayCodec.ql --database ../../../codeql/codeql_db_239797 --output codeql1-ObjectArrayCodec.ql.bqrs
+2025-06-27 10:56:16,610 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 반환 코드: 0
+2025-06-27 10:56:16,610 - CodeQL-gemini-1_5-flash - WARNING - 쿼리 실행 에러: Compiling query plan for /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql.
+WARNING: The @id property should be a valid query identifier. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql:1,1-7,4)
+WARNING: A problem query must define one of the following properties: @severity, @problem.severity. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql:1,1-7,4)
+[1/1] Found in cache: /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql.
+Starting evaluation of vuln4j-queries/codeql1-ObjectArrayCodec.ql.
+[1/1 eval 870ms] Evaluation done; writing results to /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql.bqrs.
+Shutting down query evaluator.
+
+2025-06-27 10:56:16,611 - CodeQL-gemini-1_5-flash - INFO - 결과 디코딩 명령어: codeql bqrs decode codeql1-ObjectArrayCodec.ql.bqrs --format=csv
+2025-06-27 10:56:17,286 - CodeQL-gemini-1_5-flash - INFO - 디코딩 반환 코드: 0
+2025-06-27 10:56:17,287 - CodeQL-gemini-1_5-flash - INFO - CodeQL 분석 완료 - 1개 결과
+2025-06-27 10:56:17,287 - CodeQL-gemini-1_5-flash - INFO - 결과 #1: "m","col1"
+2025-06-27 10:56:17,288 - CodeQL-gemini-1_5-flash - INFO - 임시 쿼리 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql
+2025-06-27 10:56:17,288 - CodeQL-gemini-1_5-flash - INFO - BQRS 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-ObjectArrayCodec.ql.bqrs
+2025-06-27 10:56:25,827 - CodeQL-gemini-1_5-flash - INFO - === CodeQL 분석 시작 ===
+2025-06-27 10:56:25,827 - CodeQL-gemini-1_5-flash - INFO - 규칙 파일: rule/VUL4J-1/gemini-1_5-flash/codeql1-write
+2025-06-27 10:56:25,827 - CodeQL-gemini-1_5-flash - INFO - 대상 경로: benchmark/Java/VUL4J/VUL4J-1
+2025-06-27 10:56:25,827 - CodeQL-gemini-1_5-flash - INFO - 데이터베이스 경로: None
+2025-06-27 10:56:25,827 - CodeQL-gemini-1_5-flash - INFO - 기존 DB 삭제: ./codeql/codeql_db_239797
+2025-06-27 10:56:25,842 - CodeQL-gemini-1_5-flash - INFO - 새 CodeQL DB 생성: ./codeql/codeql_db_239797
+2025-06-27 10:56:25,842 - CodeQL-gemini-1_5-flash - INFO - DB 생성 명령어: codeql database create ./codeql/codeql_db_239797 --language=java --source-root=./maven-project --overwrite
+2025-06-27 10:56:42,111 - CodeQL-gemini-1_5-flash - INFO - DB 생성 반환 코드: 0
+2025-06-27 10:56:42,112 - CodeQL-gemini-1_5-flash - INFO - DB 생성 출력: [2025-06-27 10:56:28] [build-stdout] [2025-06-27 10:56:28] Build directory is .
+[2025-06-27 10:56:28] [build-stdout] [2025-06-27 10:56:28] [autobuild] > mvn clean package -f pom.xml -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Dspotbugs.skip -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true -Dspotless.check.skip=true
+[2025-06-27 10:56:28] [build-stdout] [2025-06-27 10:56:28] [autobuild] Apache Maven 3.6.3
+[2025-06-27 10:56:28] [build-stdout] [2025-06-27 10:56:28] [autobuild] Maven home: /usr/share/maven
+[2025-06-27 10:56:28] [build-stdout] [2025-06-27 10:56:28] [autobuild] Java version: 11.0.27, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+[2025-06-27 10:56:28] [build-stdout] [2025-06-27 10:56:28] [autobuild] Default locale: en_US, platform encoding: UTF-8
+[2025-06-27 10:56:28] [build-stdout] [2025-06-27 10:56:28] [autobuild] OS name: "linux", version: "6.8.0-58-generic", arch: "amd64", family: "unix"
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [INFO] Error stacktraces are turned on.
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [INFO] Scanning for projects...
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] 
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] Some problems were encountered while building the effective model for com.example:vuln-analysis:jar:1.0.0
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] 'dependencies.dependency.systemPath' for com.alibaba:fastjson:jar should not point at files within the project directory, ${project.basedir}/../fastjson.jar will be unresolvable by dependent projects @ line 25, column 25
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] 
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] 
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [WARNING] 
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [INFO] 
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [INFO] ---------------------< com.example:vuln-analysis >----------------------
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [INFO] Building vuln-analysis 1.0.0
+[2025-06-27 10:56:29] [build-stdout] [2025-06-27 10:56:29] [autobuild] [INFO] --------------------------------[ jar ]---------------------------------
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] 
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ vuln-analysis ---
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] Deleting /home/ace4_sijune/test/AVR/maven-project/target
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] 
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ vuln-analysis ---
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/main/resources
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] 
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ vuln-analysis ---
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] Changes detected - recompiling the module!
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] [INFO] Compiling 1 source file to /home/ace4_sijune/test/AVR/maven-project/target/classes
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] WARNING: An illegal reflective access operation has occurred
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] WARNING: Illegal reflective access by com.semmle.extractor.java.interceptors.JavacToolInterceptor to method com.sun.tools.javac.file.PathFileObject$SimpleFileObject.toUri()
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] WARNING: Please consider reporting this to the maintainers of com.semmle.extractor.java.interceptors.JavacToolInterceptor
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+[2025-06-27 10:56:30] [build-stdout] [2025-06-27 10:56:30] [autobuild] WARNING: All illegal access operations will be denied in a future release
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] 
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ vuln-analysis ---
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/test/resources
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] 
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ vuln-analysis ---
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] No sources to compile
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] 
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ vuln-analysis ---
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] Tests are skipped.
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] 
+[2025-06-27 10:56:35] [build-stdout] [2025-06-27 10:56:35] [autobuild] [INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ vuln-analysis ---
+[2025-06-27 10:56:36] [build-stdout] [2025-06-27 10:56:36] [autobuild] [INFO] Building jar: /home/ace4_sijune/test/AVR/maven-project/target/vuln-analysis-1.0.0.jar
+[2025-06-27 10:56:36] [build-stdout] [2025-06-27 10:56:36] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:56:36] [build-stdout] [2025-06-27 10:56:36] [autobuild] [INFO] BUILD SUCCESS
+[2025-06-27 10:56:36] [build-stdout] [2025-06-27 10:56:36] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:56:36] [build-stdout] [2025-06-27 10:56:36] [autobuild] [INFO] Total time:  6.267 s
+[2025-06-27 10:56:36] [build-stdout] [2025-06-27 10:56:36] [autobuild] [INFO] Finished at: 2025-06-27T10:56:36+09:00
+[2025-06-27 10:56:36] [build-stdout] [2025-06-27 10:56:36] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:56:38] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:38] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:38] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/xml/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index11018900873353492019.list]
+[2025-06-27 10:56:39] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:39] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:56:39] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/properties/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index11954263632311203165.list]
+
+2025-06-27 10:56:42,112 - CodeQL-gemini-1_5-flash - WARNING - DB 생성 에러: Initializing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running build command: [/opt/codeql/java/tools/autobuild.sh]
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/autobuild.sh]
+Finalizing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running pre-finalize script /opt/codeql/java/tools/pre-finalize.sh in /home/ace4_sijune/test/AVR/maven-project.
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/pre-finalize.sh]
+Running TRAP import for CodeQL database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797...
+Importing TRAP files
+Merging relations
+Finished writing database (relations: 269.91 KiB; string pool: 2.41 MiB).
+TRAP import complete (1.6s).
+Finished zipping source archive (3.50 KiB).
+Successfully created database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+
+2025-06-27 10:56:42,113 - CodeQL-gemini-1_5-flash - INFO - 쿼리 파일 확장자 추가: rule/VUL4J-1/gemini-1_5-flash/codeql1-write -> rule/VUL4J-1/gemini-1_5-flash/codeql1-write.ql
+2025-06-27 10:56:42,113 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 명령어: codeql query run codeql1-write.ql --database ../../../codeql/codeql_db_239797 --output codeql1-write.ql.bqrs
+2025-06-27 10:56:50,249 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 반환 코드: 0
+2025-06-27 10:56:50,249 - CodeQL-gemini-1_5-flash - WARNING - 쿼리 실행 에러: Compiling query plan for /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-write.ql.
+WARNING: A problem query must define one of the following properties: @severity, @problem.severity. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-write.ql:1,1-7,4)
+[1/1] Found in cache: /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-write.ql.
+Starting evaluation of vuln4j-queries/codeql1-write.ql.
+[1/1 eval 862ms] Evaluation done; writing results to /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-write.ql.bqrs.
+Shutting down query evaluator.
+
+2025-06-27 10:56:50,250 - CodeQL-gemini-1_5-flash - INFO - 결과 디코딩 명령어: codeql bqrs decode codeql1-write.ql.bqrs --format=csv
+2025-06-27 10:56:50,929 - CodeQL-gemini-1_5-flash - INFO - 디코딩 반환 코드: 0
+2025-06-27 10:56:50,929 - CodeQL-gemini-1_5-flash - INFO - CodeQL 분석 완료 - 53개 결과
+2025-06-27 10:56:50,930 - CodeQL-gemini-1_5-flash - INFO - 결과 #1: "m","col1"
+2025-06-27 10:56:50,930 - CodeQL-gemini-1_5-flash - INFO - 결과 #2: "write","Found write method at file:///home/ace4_sijune/test/AVR/fastjson.jar/com/alibaba/fastjson/serializer/JSONSerializer.class:0:0:0:0"
+2025-06-27 10:56:50,930 - CodeQL-gemini-1_5-flash - INFO - 결과 #3: "write","Found write method at file:///home/ace4_sijune/test/AVR/fastjson.jar/com/alibaba/fastjson/serializer/JSONSerializer.class:0:0:0:0"
+2025-06-27 10:56:50,930 - CodeQL-gemini-1_5-flash - INFO - 결과 #4: "write","Found write method at file:///home/ace4_sijune/test/AVR/fastjson.jar/com/alibaba/fastjson/serializer/JSONSerializer.class:0:0:0:0"
+2025-06-27 10:56:50,930 - CodeQL-gemini-1_5-flash - INFO - 결과 #5: "write","Found write method at file:///home/ace4_sijune/test/AVR/fastjson.jar/com/alibaba/fastjson/serializer/JSONSerializer.class:0:0:0:0"
+2025-06-27 10:56:50,930 - CodeQL-gemini-1_5-flash - INFO - 임시 쿼리 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-write.ql
+2025-06-27 10:56:50,931 - CodeQL-gemini-1_5-flash - INFO - BQRS 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-write.ql.bqrs
+2025-06-27 10:56:59,103 - CodeQL-gemini-1_5-flash - INFO - === CodeQL 분석 시작 ===
+2025-06-27 10:56:59,103 - CodeQL-gemini-1_5-flash - INFO - 규칙 파일: rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze
+2025-06-27 10:56:59,103 - CodeQL-gemini-1_5-flash - INFO - 대상 경로: benchmark/Java/VUL4J/VUL4J-1
+2025-06-27 10:56:59,103 - CodeQL-gemini-1_5-flash - INFO - 데이터베이스 경로: None
+2025-06-27 10:56:59,103 - CodeQL-gemini-1_5-flash - INFO - 기존 DB 삭제: ./codeql/codeql_db_239797
+2025-06-27 10:56:59,118 - CodeQL-gemini-1_5-flash - INFO - 새 CodeQL DB 생성: ./codeql/codeql_db_239797
+2025-06-27 10:56:59,119 - CodeQL-gemini-1_5-flash - INFO - DB 생성 명령어: codeql database create ./codeql/codeql_db_239797 --language=java --source-root=./maven-project --overwrite
+2025-06-27 10:57:15,614 - CodeQL-gemini-1_5-flash - INFO - DB 생성 반환 코드: 0
+2025-06-27 10:57:15,615 - CodeQL-gemini-1_5-flash - INFO - DB 생성 출력: [2025-06-27 10:57:01] [build-stdout] [2025-06-27 10:57:01] Build directory is .
+[2025-06-27 10:57:01] [build-stdout] [2025-06-27 10:57:01] [autobuild] > mvn clean package -f pom.xml -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Dspotbugs.skip -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true -Dspotless.check.skip=true
+[2025-06-27 10:57:02] [build-stdout] [2025-06-27 10:57:02] [autobuild] Apache Maven 3.6.3
+[2025-06-27 10:57:02] [build-stdout] [2025-06-27 10:57:02] [autobuild] Maven home: /usr/share/maven
+[2025-06-27 10:57:02] [build-stdout] [2025-06-27 10:57:02] [autobuild] Java version: 11.0.27, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+[2025-06-27 10:57:02] [build-stdout] [2025-06-27 10:57:02] [autobuild] Default locale: en_US, platform encoding: UTF-8
+[2025-06-27 10:57:02] [build-stdout] [2025-06-27 10:57:02] [autobuild] OS name: "linux", version: "6.8.0-58-generic", arch: "amd64", family: "unix"
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] Error stacktraces are turned on.
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] Scanning for projects...
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] Some problems were encountered while building the effective model for com.example:vuln-analysis:jar:1.0.0
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] 'dependencies.dependency.systemPath' for com.alibaba:fastjson:jar should not point at files within the project directory, ${project.basedir}/../fastjson.jar will be unresolvable by dependent projects @ line 25, column 25
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [WARNING] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] ---------------------< com.example:vuln-analysis >----------------------
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] Building vuln-analysis 1.0.0
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] --------------------------------[ jar ]---------------------------------
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ vuln-analysis ---
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] Deleting /home/ace4_sijune/test/AVR/maven-project/target
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ vuln-analysis ---
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/main/resources
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] 
+[2025-06-27 10:57:03] [build-stdout] [2025-06-27 10:57:03] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ vuln-analysis ---
+[2025-06-27 10:57:04] [build-stdout] [2025-06-27 10:57:04] [autobuild] [INFO] Changes detected - recompiling the module!
+[2025-06-27 10:57:04] [build-stdout] [2025-06-27 10:57:04] [autobuild] [INFO] Compiling 1 source file to /home/ace4_sijune/test/AVR/maven-project/target/classes
+[2025-06-27 10:57:04] [build-stdout] [2025-06-27 10:57:04] [autobuild] WARNING: An illegal reflective access operation has occurred
+[2025-06-27 10:57:04] [build-stdout] [2025-06-27 10:57:04] [autobuild] WARNING: Illegal reflective access by com.semmle.extractor.java.interceptors.JavacToolInterceptor to method com.sun.tools.javac.file.PathFileObject$SimpleFileObject.toUri()
+[2025-06-27 10:57:04] [build-stdout] [2025-06-27 10:57:04] [autobuild] WARNING: Please consider reporting this to the maintainers of com.semmle.extractor.java.interceptors.JavacToolInterceptor
+[2025-06-27 10:57:04] [build-stdout] [2025-06-27 10:57:04] [autobuild] WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+[2025-06-27 10:57:04] [build-stdout] [2025-06-27 10:57:04] [autobuild] WARNING: All illegal access operations will be denied in a future release
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] 
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ vuln-analysis ---
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/test/resources
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] 
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ vuln-analysis ---
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] No sources to compile
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] 
+[2025-06-27 10:57:08] [build-stdout] [2025-06-27 10:57:08] [autobuild] [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ vuln-analysis ---
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] Tests are skipped.
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] 
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ vuln-analysis ---
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] Building jar: /home/ace4_sijune/test/AVR/maven-project/target/vuln-analysis-1.0.0.jar
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] BUILD SUCCESS
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] Total time:  6.114 s
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] Finished at: 2025-06-27T10:57:09+09:00
+[2025-06-27 10:57:09] [build-stdout] [2025-06-27 10:57:09] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:57:11] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:11] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:11] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/xml/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index10550053099063872145.list]
+[2025-06-27 10:57:12] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:13] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:13] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/properties/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index5519368026821310820.list]
+
+2025-06-27 10:57:15,615 - CodeQL-gemini-1_5-flash - WARNING - DB 생성 에러: Initializing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running build command: [/opt/codeql/java/tools/autobuild.sh]
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/autobuild.sh]
+Finalizing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running pre-finalize script /opt/codeql/java/tools/pre-finalize.sh in /home/ace4_sijune/test/AVR/maven-project.
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/pre-finalize.sh]
+Running TRAP import for CodeQL database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797...
+Importing TRAP files
+Merging relations
+Finished writing database (relations: 269.91 KiB; string pool: 2.41 MiB).
+TRAP import complete (1.7s).
+Finished zipping source archive (3.50 KiB).
+Successfully created database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+
+2025-06-27 10:57:15,616 - CodeQL-gemini-1_5-flash - INFO - 쿼리 파일 확장자 추가: rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze -> rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze.ql
+2025-06-27 10:57:15,616 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 명령어: codeql query run codeql1-deserialze.ql --database ../../../codeql/codeql_db_239797 --output codeql1-deserialze.ql.bqrs
+2025-06-27 10:57:23,800 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 반환 코드: 0
+2025-06-27 10:57:23,800 - CodeQL-gemini-1_5-flash - WARNING - 쿼리 실행 에러: Compiling query plan for /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze.ql.
+WARNING: A problem query must define one of the following properties: @severity, @problem.severity. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze.ql:1,1-7,4)
+[1/1] Found in cache: /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze.ql.
+Starting evaluation of vuln4j-queries/codeql1-deserialze.ql.
+[1/1 eval 849ms] Evaluation done; writing results to /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze.ql.bqrs.
+Shutting down query evaluator.
+
+2025-06-27 10:57:23,800 - CodeQL-gemini-1_5-flash - INFO - 결과 디코딩 명령어: codeql bqrs decode codeql1-deserialze.ql.bqrs --format=csv
+2025-06-27 10:57:24,457 - CodeQL-gemini-1_5-flash - INFO - 디코딩 반환 코드: 0
+2025-06-27 10:57:24,457 - CodeQL-gemini-1_5-flash - INFO - CodeQL 분석 완료 - 3개 결과
+2025-06-27 10:57:24,457 - CodeQL-gemini-1_5-flash - INFO - 결과 #1: "m","col1"
+2025-06-27 10:57:24,458 - CodeQL-gemini-1_5-flash - INFO - 결과 #2: "deserialze","Found deserialze method at file:///home/ace4_sijune/test/AVR/fastjson.jar/com/alibaba/fastjson/parser/deserializer/ObjectDeserializer.class:0:0:0:0"
+2025-06-27 10:57:24,458 - CodeQL-gemini-1_5-flash - INFO - 결과 #3: "deserialze","Found deserialze method at file:///home/ace4_sijune/test/AVR/maven-project/src/main/java/com/alibaba/fastjson/serializer/ObjectArrayCodec.java:128:18:128:27"
+2025-06-27 10:57:24,458 - CodeQL-gemini-1_5-flash - INFO - 임시 쿼리 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze.ql
+2025-06-27 10:57:24,459 - CodeQL-gemini-1_5-flash - INFO - BQRS 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-deserialze.ql.bqrs
+2025-06-27 10:57:32,397 - CodeQL-gemini-1_5-flash - INFO - === CodeQL 분석 시작 ===
+2025-06-27 10:57:32,397 - CodeQL-gemini-1_5-flash - INFO - 규칙 파일: rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray
+2025-06-27 10:57:32,397 - CodeQL-gemini-1_5-flash - INFO - 대상 경로: benchmark/Java/VUL4J/VUL4J-1
+2025-06-27 10:57:32,398 - CodeQL-gemini-1_5-flash - INFO - 데이터베이스 경로: None
+2025-06-27 10:57:32,398 - CodeQL-gemini-1_5-flash - INFO - 기존 DB 삭제: ./codeql/codeql_db_239797
+2025-06-27 10:57:32,414 - CodeQL-gemini-1_5-flash - INFO - 새 CodeQL DB 생성: ./codeql/codeql_db_239797
+2025-06-27 10:57:32,414 - CodeQL-gemini-1_5-flash - INFO - DB 생성 명령어: codeql database create ./codeql/codeql_db_239797 --language=java --source-root=./maven-project --overwrite
+2025-06-27 10:57:48,857 - CodeQL-gemini-1_5-flash - INFO - DB 생성 반환 코드: 0
+2025-06-27 10:57:48,858 - CodeQL-gemini-1_5-flash - INFO - DB 생성 출력: [2025-06-27 10:57:34] [build-stdout] [2025-06-27 10:57:34] Build directory is .
+[2025-06-27 10:57:35] [build-stdout] [2025-06-27 10:57:35] [autobuild] > mvn clean package -f pom.xml -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Dspotbugs.skip -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true -Dspotless.check.skip=true
+[2025-06-27 10:57:35] [build-stdout] [2025-06-27 10:57:35] [autobuild] Apache Maven 3.6.3
+[2025-06-27 10:57:35] [build-stdout] [2025-06-27 10:57:35] [autobuild] Maven home: /usr/share/maven
+[2025-06-27 10:57:35] [build-stdout] [2025-06-27 10:57:35] [autobuild] Java version: 11.0.27, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+[2025-06-27 10:57:35] [build-stdout] [2025-06-27 10:57:35] [autobuild] Default locale: en_US, platform encoding: UTF-8
+[2025-06-27 10:57:35] [build-stdout] [2025-06-27 10:57:35] [autobuild] OS name: "linux", version: "6.8.0-58-generic", arch: "amd64", family: "unix"
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] Error stacktraces are turned on.
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] Scanning for projects...
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] 
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] Some problems were encountered while building the effective model for com.example:vuln-analysis:jar:1.0.0
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] 'dependencies.dependency.systemPath' for com.alibaba:fastjson:jar should not point at files within the project directory, ${project.basedir}/../fastjson.jar will be unresolvable by dependent projects @ line 25, column 25
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] 
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] 
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [WARNING] 
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] 
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] ---------------------< com.example:vuln-analysis >----------------------
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] Building vuln-analysis 1.0.0
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] --------------------------------[ jar ]---------------------------------
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] 
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ vuln-analysis ---
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] Deleting /home/ace4_sijune/test/AVR/maven-project/target
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] 
+[2025-06-27 10:57:36] [build-stdout] [2025-06-27 10:57:36] [autobuild] [INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ vuln-analysis ---
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/main/resources
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] [INFO] 
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ vuln-analysis ---
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] [INFO] Changes detected - recompiling the module!
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] [INFO] Compiling 1 source file to /home/ace4_sijune/test/AVR/maven-project/target/classes
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] WARNING: An illegal reflective access operation has occurred
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] WARNING: Illegal reflective access by com.semmle.extractor.java.interceptors.JavacToolInterceptor to method com.sun.tools.javac.file.PathFileObject$SimpleFileObject.toUri()
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] WARNING: Please consider reporting this to the maintainers of com.semmle.extractor.java.interceptors.JavacToolInterceptor
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+[2025-06-27 10:57:37] [build-stdout] [2025-06-27 10:57:37] [autobuild] WARNING: All illegal access operations will be denied in a future release
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] 
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ vuln-analysis ---
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/test/resources
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] 
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ vuln-analysis ---
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] No sources to compile
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] 
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ vuln-analysis ---
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] Tests are skipped.
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] 
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ vuln-analysis ---
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] BUILD SUCCESS
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] Total time:  6.162 s
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] Finished at: 2025-06-27T10:57:42+09:00
+[2025-06-27 10:57:42] [build-stdout] [2025-06-27 10:57:42] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:57:44] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:44] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:44] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/xml/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index4338880158167742564.list]
+[2025-06-27 10:57:46] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:46] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:57:46] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/properties/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index14379042047230312356.list]
+
+2025-06-27 10:57:48,858 - CodeQL-gemini-1_5-flash - WARNING - DB 생성 에러: Initializing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running build command: [/opt/codeql/java/tools/autobuild.sh]
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/autobuild.sh]
+Finalizing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running pre-finalize script /opt/codeql/java/tools/pre-finalize.sh in /home/ace4_sijune/test/AVR/maven-project.
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/pre-finalize.sh]
+Running TRAP import for CodeQL database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797...
+Importing TRAP files
+Merging relations
+Finished writing database (relations: 269.91 KiB; string pool: 2.41 MiB).
+TRAP import complete (1.7s).
+Finished zipping source archive (3.50 KiB).
+Successfully created database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+
+2025-06-27 10:57:48,858 - CodeQL-gemini-1_5-flash - INFO - 쿼리 파일 확장자 추가: rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray -> rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql
+2025-06-27 10:57:48,858 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 명령어: codeql query run codeql1-toObjectArray.ql --database ../../../codeql/codeql_db_239797 --output codeql1-toObjectArray.ql.bqrs
+2025-06-27 10:57:57,453 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 반환 코드: 0
+2025-06-27 10:57:57,454 - CodeQL-gemini-1_5-flash - WARNING - 쿼리 실행 에러: Compiling query plan for /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql.
+WARNING: The @id property should be a valid query identifier. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql:1,1-7,4)
+WARNING: A problem query must define one of the following properties: @severity, @problem.severity. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql:1,1-7,4)
+[1/1] Found in cache: /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql.
+Starting evaluation of vuln4j-queries/codeql1-toObjectArray.ql.
+[1/1 eval 923ms] Evaluation done; writing results to /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql.bqrs.
+Shutting down query evaluator.
+
+2025-06-27 10:57:57,454 - CodeQL-gemini-1_5-flash - INFO - 결과 디코딩 명령어: codeql bqrs decode codeql1-toObjectArray.ql.bqrs --format=csv
+2025-06-27 10:57:58,130 - CodeQL-gemini-1_5-flash - INFO - 디코딩 반환 코드: 0
+2025-06-27 10:57:58,131 - CodeQL-gemini-1_5-flash - INFO - CodeQL 분석 완료 - 2개 결과
+2025-06-27 10:57:58,131 - CodeQL-gemini-1_5-flash - INFO - 결과 #1: "m","col1"
+2025-06-27 10:57:58,131 - CodeQL-gemini-1_5-flash - INFO - 결과 #2: "toObjectArray","Found toObjectArray method at file:///home/ace4_sijune/test/AVR/maven-project/src/main/java/com/alibaba/fastjson/serializer/ObjectArrayCodec.java:183:19:183:31"
+2025-06-27 10:57:58,132 - CodeQL-gemini-1_5-flash - INFO - 임시 쿼리 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql
+2025-06-27 10:57:58,132 - CodeQL-gemini-1_5-flash - INFO - BQRS 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-toObjectArray.ql.bqrs
+2025-06-27 10:58:05,641 - CodeQL-gemini-1_5-flash - INFO - === CodeQL 분석 시작 ===
+2025-06-27 10:58:05,641 - CodeQL-gemini-1_5-flash - INFO - 규칙 파일: rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken
+2025-06-27 10:58:05,642 - CodeQL-gemini-1_5-flash - INFO - 대상 경로: benchmark/Java/VUL4J/VUL4J-1
+2025-06-27 10:58:05,642 - CodeQL-gemini-1_5-flash - INFO - 데이터베이스 경로: None
+2025-06-27 10:58:05,642 - CodeQL-gemini-1_5-flash - INFO - 기존 DB 삭제: ./codeql/codeql_db_239797
+2025-06-27 10:58:05,657 - CodeQL-gemini-1_5-flash - INFO - 새 CodeQL DB 생성: ./codeql/codeql_db_239797
+2025-06-27 10:58:05,658 - CodeQL-gemini-1_5-flash - INFO - DB 생성 명령어: codeql database create ./codeql/codeql_db_239797 --language=java --source-root=./maven-project --overwrite
+2025-06-27 10:58:22,406 - CodeQL-gemini-1_5-flash - INFO - DB 생성 반환 코드: 0
+2025-06-27 10:58:22,407 - CodeQL-gemini-1_5-flash - INFO - DB 생성 출력: [2025-06-27 10:58:08] [build-stdout] [2025-06-27 10:58:08] Build directory is .
+[2025-06-27 10:58:08] [build-stdout] [2025-06-27 10:58:08] [autobuild] > mvn clean package -f pom.xml -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Dspotbugs.skip -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true -Dspotless.check.skip=true
+[2025-06-27 10:58:08] [build-stdout] [2025-06-27 10:58:08] [autobuild] Apache Maven 3.6.3
+[2025-06-27 10:58:08] [build-stdout] [2025-06-27 10:58:08] [autobuild] Maven home: /usr/share/maven
+[2025-06-27 10:58:08] [build-stdout] [2025-06-27 10:58:08] [autobuild] Java version: 11.0.27, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+[2025-06-27 10:58:08] [build-stdout] [2025-06-27 10:58:08] [autobuild] Default locale: en_US, platform encoding: UTF-8
+[2025-06-27 10:58:08] [build-stdout] [2025-06-27 10:58:08] [autobuild] OS name: "linux", version: "6.8.0-58-generic", arch: "amd64", family: "unix"
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] Error stacktraces are turned on.
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] Scanning for projects...
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] 
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] Some problems were encountered while building the effective model for com.example:vuln-analysis:jar:1.0.0
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] 'dependencies.dependency.systemPath' for com.alibaba:fastjson:jar should not point at files within the project directory, ${project.basedir}/../fastjson.jar will be unresolvable by dependent projects @ line 25, column 25
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] 
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] 
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [WARNING] 
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] 
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] ---------------------< com.example:vuln-analysis >----------------------
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] Building vuln-analysis 1.0.0
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] --------------------------------[ jar ]---------------------------------
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] 
+[2025-06-27 10:58:09] [build-stdout] [2025-06-27 10:58:09] [autobuild] [INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ vuln-analysis ---
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] Deleting /home/ace4_sijune/test/AVR/maven-project/target
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] 
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ vuln-analysis ---
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/main/resources
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] 
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ vuln-analysis ---
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] Changes detected - recompiling the module!
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] [INFO] Compiling 1 source file to /home/ace4_sijune/test/AVR/maven-project/target/classes
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] WARNING: An illegal reflective access operation has occurred
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] WARNING: Illegal reflective access by com.semmle.extractor.java.interceptors.JavacToolInterceptor to method com.sun.tools.javac.file.PathFileObject$SimpleFileObject.toUri()
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] WARNING: Please consider reporting this to the maintainers of com.semmle.extractor.java.interceptors.JavacToolInterceptor
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+[2025-06-27 10:58:10] [build-stdout] [2025-06-27 10:58:10] [autobuild] WARNING: All illegal access operations will be denied in a future release
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] 
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ vuln-analysis ---
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] skip non existing resourceDirectory /home/ace4_sijune/test/AVR/maven-project/src/test/resources
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] 
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ vuln-analysis ---
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] No sources to compile
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] 
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ vuln-analysis ---
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] Tests are skipped.
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] 
+[2025-06-27 10:58:15] [build-stdout] [2025-06-27 10:58:15] [autobuild] [INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ vuln-analysis ---
+[2025-06-27 10:58:16] [build-stdout] [2025-06-27 10:58:16] [autobuild] [INFO] Building jar: /home/ace4_sijune/test/AVR/maven-project/target/vuln-analysis-1.0.0.jar
+[2025-06-27 10:58:16] [build-stdout] [2025-06-27 10:58:16] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:58:16] [build-stdout] [2025-06-27 10:58:16] [autobuild] [INFO] BUILD SUCCESS
+[2025-06-27 10:58:16] [build-stdout] [2025-06-27 10:58:16] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:58:16] [build-stdout] [2025-06-27 10:58:16] [autobuild] [INFO] Total time:  6.390 s
+[2025-06-27 10:58:16] [build-stdout] [2025-06-27 10:58:16] [autobuild] [INFO] Finished at: 2025-06-27T10:58:16+09:00
+[2025-06-27 10:58:16] [build-stdout] [2025-06-27 10:58:16] [autobuild] [INFO] ------------------------------------------------------------------------
+[2025-06-27 10:58:18] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:58:18] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:58:18] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/xml/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index4731426370954796400.list]
+[2025-06-27 10:58:19] [build-stderr] Scanning for files in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:58:19] [build-stderr] /home/ace4_sijune/test/AVR/codeql/codeql_db_239797: Indexing files in in /home/ace4_sijune/test/AVR/maven-project...
+[2025-06-27 10:58:19] [build-stderr] Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/properties/tools/index-files.sh, /home/ace4_sijune/test/AVR/codeql/codeql_db_239797/working/files-to-index3840433476800264000.list]
+
+2025-06-27 10:58:22,407 - CodeQL-gemini-1_5-flash - WARNING - DB 생성 에러: Initializing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running build command: [/opt/codeql/java/tools/autobuild.sh]
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/autobuild.sh]
+Finalizing database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+Running pre-finalize script /opt/codeql/java/tools/pre-finalize.sh in /home/ace4_sijune/test/AVR/maven-project.
+Running command in /home/ace4_sijune/test/AVR/maven-project: [/opt/codeql/java/tools/pre-finalize.sh]
+Running TRAP import for CodeQL database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797...
+Importing TRAP files
+Merging relations
+Finished writing database (relations: 269.91 KiB; string pool: 2.41 MiB).
+TRAP import complete (1.7s).
+Finished zipping source archive (3.50 KiB).
+Successfully created database at /home/ace4_sijune/test/AVR/codeql/codeql_db_239797.
+
+2025-06-27 10:58:22,408 - CodeQL-gemini-1_5-flash - INFO - 쿼리 파일 확장자 추가: rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken -> rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql
+2025-06-27 10:58:22,408 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 명령어: codeql query run codeql1-getFastMatchToken.ql --database ../../../codeql/codeql_db_239797 --output codeql1-getFastMatchToken.ql.bqrs
+2025-06-27 10:58:30,771 - CodeQL-gemini-1_5-flash - INFO - 쿼리 실행 반환 코드: 0
+2025-06-27 10:58:30,771 - CodeQL-gemini-1_5-flash - WARNING - 쿼리 실행 에러: Compiling query plan for /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql.
+WARNING: The @id property should be a valid query identifier. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql:1,1-7,4)
+WARNING: A problem query must define one of the following properties: @severity, @problem.severity. (/home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql:1,1-7,4)
+[1/1] Found in cache: /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql.
+Starting evaluation of vuln4j-queries/codeql1-getFastMatchToken.ql.
+[1/1 eval 877ms] Evaluation done; writing results to /home/ace4_sijune/test/AVR/rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql.bqrs.
+Shutting down query evaluator.
+
+2025-06-27 10:58:30,771 - CodeQL-gemini-1_5-flash - INFO - 결과 디코딩 명령어: codeql bqrs decode codeql1-getFastMatchToken.ql.bqrs --format=csv
+2025-06-27 10:58:31,427 - CodeQL-gemini-1_5-flash - INFO - 디코딩 반환 코드: 0
+2025-06-27 10:58:31,428 - CodeQL-gemini-1_5-flash - INFO - CodeQL 분석 완료 - 4개 결과
+2025-06-27 10:58:31,428 - CodeQL-gemini-1_5-flash - INFO - 결과 #1: "m","col1"
+2025-06-27 10:58:31,428 - CodeQL-gemini-1_5-flash - INFO - 결과 #2: "getFastMatchToken","Found getFastMatchToken method at file:///home/ace4_sijune/test/AVR/fastjson.jar/com/alibaba/fastjson/parser/deserializer/FieldDeserializer.class:0:0:0:0"
+2025-06-27 10:58:31,428 - CodeQL-gemini-1_5-flash - INFO - 결과 #3: "getFastMatchToken","Found getFastMatchToken method at file:///home/ace4_sijune/test/AVR/fastjson.jar/com/alibaba/fastjson/parser/deserializer/ObjectDeserializer.class:0:0:0:0"
+2025-06-27 10:58:31,428 - CodeQL-gemini-1_5-flash - INFO - 결과 #4: "getFastMatchToken","Found getFastMatchToken method at file:///home/ace4_sijune/test/AVR/maven-project/src/main/java/com/alibaba/fastjson/serializer/ObjectArrayCodec.java:239:16:239:32"
+2025-06-27 10:58:31,429 - CodeQL-gemini-1_5-flash - INFO - 임시 쿼리 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql
+2025-06-27 10:58:31,429 - CodeQL-gemini-1_5-flash - INFO - BQRS 파일 삭제: rule/VUL4J-1/gemini-1_5-flash/codeql1-getFastMatchToken.ql.bqrs

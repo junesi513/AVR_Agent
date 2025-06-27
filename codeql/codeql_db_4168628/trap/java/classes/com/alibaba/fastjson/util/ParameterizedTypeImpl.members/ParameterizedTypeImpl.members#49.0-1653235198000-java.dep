@@ -1,0 +1,12 @@
+TRAP dependencies 1.2
+
+TRAP
+classes/com/alibaba/fastjson/util/ParameterizedTypeImpl.members/ParameterizedTypeImpl.members#49.0-1653235198000-java.trap.gz
+
+TRAPS
+classes/com/alibaba/fastjson/util/ParameterizedTypeImpl.members.trap.gz
+classes/java/lang/Object.members.trap.gz
+classes/java/lang/reflect/ParameterizedType.members.trap.gz
+classes/java/lang/reflect/Type.members.trap.gz
+classes/java/lang/Cloneable.members.trap.gz
+classes/java/io/Serializable.members.trap.gz

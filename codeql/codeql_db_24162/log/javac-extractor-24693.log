@@ -1,0 +1,15 @@
+[2025-06-27 02:56:17] [javac-extractor-24693] Starting extraction for:
+                                              sun.java.command=com.semmle.extractor.java.JavaExtractor --jdk-version 11 --javac-args @@@/home/ace4_sijune/test/AVR/codeql/codeql_db_24162/log/ext/javac.args
+                                              user.dir=/home/ace4_sijune/test/AVR/maven-project
+[2025-06-27 02:56:17] [javac-extractor-24693] Compilation name /home/ace4_sijune/test/AVR/codeql/codeql_db_24162/trap/java/diagnostics/diagnostic.trap.gz
+[2025-06-27 02:56:17] [javac-extractor-24693] [WARN] Appending source destination directory /home/ace4_sijune/test/AVR/maven-project/target/generated-sources/annotations to sourcepath
+[2025-06-27 02:56:19] [javac-extractor-24693] Annotation processor class 'lombok.launch.AnnotationProcessorHider$AnnotationProcessor' initialized.
+[2025-06-27 02:56:19] [javac-extractor-24693] Annotation processor class 'lombok.launch.AnnotationProcessorHider$ClaimingProcessor' initialized.
+[2025-06-27 02:56:19] [javac-extractor-24693] Processing file /home/ace4_sijune/test/AVR/maven-project/src/main/java/com/alibaba/fastjson/serializer/ObjectArrayCodec.java
+[2025-06-27 02:56:20] [javac-extractor-24693] Processing module java.base
+[2025-06-27 02:56:20] [javac-extractor-24693] Processing JAR file: /home/ace4_sijune/test/AVR/fastjson.jar
+[2025-06-27 02:56:20] [javac-extractor-24693] Javac init time: 1.0s
+[2025-06-27 02:56:20] [javac-extractor-24693] Javac attr time: 0.1s
+[2025-06-27 02:56:20] [javac-extractor-24693] Extractor time: 0.9s
+[2025-06-27 02:56:20] [javac-extractor-24693] Other time: 0.2s
+[2025-06-27 02:56:20] [javac-extractor-24693] Total time: 2.2s

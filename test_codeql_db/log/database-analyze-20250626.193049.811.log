@@ -1,0 +1,14 @@
+[2025-06-26 19:30:49] This is codeql database analyze ./test_codeql_db codeql/java-queries:codeql-suites/java-security-extended.qls --format=sarif-latest --output=results.sarif --search-path=/opt/codeql-repo
+[2025-06-26 19:30:49] Log file was started late.
+[2025-06-26 19:30:49] [PROGRESS] database analyze> Running queries.
+[2025-06-26 19:30:49] Running plumbing command: codeql database run-queries --evaluator-log-level=5 --warnings=show --dynamic-join-order-mode=none --search-path=/opt/codeql-repo --qlconfig-file=/home/ace4_sijune/test/AVR/qlconfig.yml --no-rerun --interpret-passthrough=null,--format=sarif-latest,-o=/home/ace4_sijune/test/AVR/results.sarif,--max-paths=4,--csv-location-format=line-column,--print-diagnostics-summary,--print-metrics-summary,--search-path=/opt/codeql-repo,--qlconfig-file=/home/ace4_sijune/test/AVR/qlconfig.yml,--,/home/ace4_sijune/test/AVR/test_codeql_db,codeql/java-queries:codeql-suites/java-security-extended.qls -- /home/ace4_sijune/test/AVR/test_codeql_db codeql/java-queries:codeql-suites/java-security-extended.qls
+[2025-06-26 19:30:49] Calling plumbing command: codeql resolve ram --dataset=/home/ace4_sijune/test/AVR/test_codeql_db/db-java --format=json
+[2025-06-26 19:30:49] [PROGRESS] resolve ram> Stringpool size measured as 2523546
+[2025-06-26 19:30:49] Plumbing command codeql resolve ram completed:
+                      [
+                        "-J-Xmx12873M",
+                        "--off-heap-ram=16015"
+                      ]
+[2025-06-26 19:30:50] Chaining via /tmp/codeql.MP4zQ2Ag to plumbing: execute queries -J-Xmx12873M --off-heap-ram=16015 --verbosity=progress --logdir=/home/ace4_sijune/test/AVR/test_codeql_db/log --evaluator-log-level=5 --warnings=show --dynamic-join-order-mode=none --search-path=/opt/codeql-repo --qlconfig-file=/home/ace4_sijune/test/AVR/qlconfig.yml --no-rerun --interpret-passthrough=null,--format=sarif-latest,-o=/home/ace4_sijune/test/AVR/results.sarif,--max-paths=4,--csv-location-format=line-column,--print-diagnostics-summary,--print-metrics-summary,--search-path=/opt/codeql-repo,--qlconfig-file=/home/ace4_sijune/test/AVR/qlconfig.yml,--,/home/ace4_sijune/test/AVR/test_codeql_db,codeql/java-queries:codeql-suites/java-security-extended.qls --output=/home/ace4_sijune/test/AVR/test_codeql_db/results -- /home/ace4_sijune/test/AVR/test_codeql_db/db-java codeql/java-queries:codeql-suites/java-security-extended.qls
+[2025-06-26 19:30:50] Plumbing command codeql database run-queries completed with status 70.
+[2025-06-26 19:30:50] Exiting with code 70

@@ -1,0 +1,184 @@
+[T 17:25:10 4186672] CodeQL CLI version 2.21.0
+[T 17:25:10 4186672] Initializing tracer.
+[T 17:25:10 4186672] Initializing tags.
+[T 17:25:10 4186672] ID set to 00000000003FE230_0000000000000001 (parent root)
+[T 17:25:10 4186672] Initializing tracer.
+[T 17:25:10 4186672] Initializing tags.
+[T 17:25:10 4186672] ID set to 00000000003FE230_0000000000000002 (parent root)
+[T 17:25:10 4186672] Warning: SEMMLE_EXEC and SEMMLE_EXECP not set. Falling back to path lookup on argv[0].
+[T 17:25:10 4186672] ==== Candidate to intercept: /opt/codeql/tools/linux64/runner-linux (canonical: /opt/codeql/tools/linux64/runner-linux) ====
+[T 17:25:10 4186672] Lua: === Intercepted call to /opt/codeql/tools/linux64/runner-linux ===
+[T 17:25:10 4186672] Executing the following tracer actions:
+[T 17:25:10 4186672] Tracer actions:
+[T 17:25:10 4186672] pre_invocations(0)
+[T 17:25:10 4186672] post_invocations(0)
+[T 17:25:10 4186672] trace_languages(1): [java]
+[T 17:25:10 4186672] Initializing tracer.
+[T 17:25:10 4186672] Initializing tags.
+[T 17:25:10 4186672] ID set to 00000000003FE230_0000000000000003 (parent 00000000003FE230_0000000000000002)
+[T 17:25:10 4186672] ==== Candidate to intercept: /opt/codeql/java/tools/autobuild.sh (canonical: /opt/codeql/java/tools/autobuild.sh) ====
+[T 17:25:10 4186672] Lua: === Intercepted call to /opt/codeql/java/tools/autobuild.sh ===
+[T 17:25:10 4186672] Executing the following tracer actions:
+[T 17:25:10 4186672] Tracer actions:
+[T 17:25:10 4186672] pre_invocations(0)
+[T 17:25:10 4186672] post_invocations(0)
+[T 17:25:10 4186672] trace_languages(1): [java]
+[T 17:25:10 4186675] Initializing tracer.
+[T 17:25:10 4186675] Initializing tags.
+[T 17:25:10 4186675] ID set to 00000000003FE233_0000000000000001 (parent 00000000003FE230_0000000000000003)
+[T 17:25:10 4186675] ==== Candidate to intercept: /opt/codeql/tools/linux64/java/bin/java (canonical: /opt/codeql/tools/linux64/java/bin/java) ====
+[T 17:25:10 4186675] Lua: === Intercepted call to /opt/codeql/tools/linux64/java/bin/java ===
+[T 17:25:10 4186675] Executing the following tracer actions:
+[T 17:25:10 4186675] Tracer actions:
+[T 17:25:10 4186675] pre_invocations(0)
+[T 17:25:10 4186675] post_invocations(0)
+[T 17:25:10 4186675] trace_languages(1): [java]
+[T 17:25:10 4186675] Passing through -javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin to underlying JVM.
+[T 17:25:10 4186675] Passing through -Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar to underlying JVM.
+[T 17:25:11 4186675] Intercepted JVM creation with extra hidden args: ['-javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin' '-Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar' ] (result: 1, 0).
+[T 17:25:11 4186710] Initializing tracer.
+[T 17:25:11 4186710] Initializing tags.
+[T 17:25:11 4186710] ID set to 00000000003FE256_0000000000000001 (parent 00000000003FE233_0000000000000001)
+[T 17:25:11 4186710] ==== Candidate to intercept: /opt/codeql/tools/linux64/java/lib/jspawnhelper (canonical: /opt/codeql/tools/linux64/java/lib/jspawnhelper) ====
+[T 17:25:11 4186710] Lua: === Intercepted call to /opt/codeql/tools/linux64/java/lib/jspawnhelper ===
+[T 17:25:11 4186710] Executing the following tracer actions:
+[T 17:25:11 4186710] Tracer actions:
+[T 17:25:11 4186710] pre_invocations(0)
+[T 17:25:11 4186710] post_invocations(0)
+[T 17:25:11 4186710] trace_languages(1): [java]
+[T 17:25:11 4186710] Initializing tracer.
+[T 17:25:11 4186710] Initializing tags.
+[T 17:25:11 4186710] ID set to 00000000003FE256_0000000000000002 (parent 00000000003FE256_0000000000000001)
+[T 17:25:11 4186710] ==== Candidate to intercept: /usr/bin/mvn (canonical: /usr/share/maven/bin/mvn) ====
+[T 17:25:11 4186710] Lua: === Intercepted call to /usr/share/maven/bin/mvn ===
+[T 17:25:11 4186710] Executing the following tracer actions:
+[T 17:25:11 4186710] Tracer actions:
+[T 17:25:11 4186710] pre_invocations(0)
+[T 17:25:11 4186710] post_invocations(0)
+[T 17:25:11 4186710] trace_languages(1): [java]
+[T 17:25:11 4186711] Initializing tracer.
+[T 17:25:11 4186711] Initializing tags.
+[T 17:25:11 4186711] ID set to 00000000003FE257_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186711] ==== Candidate to intercept: /usr/bin/uname (canonical: /usr/bin/uname) ====
+[T 17:25:11 4186711] Lua: === Intercepted call to /usr/bin/uname ===
+[T 17:25:11 4186711] Executing the following tracer actions:
+[T 17:25:11 4186711] Tracer actions:
+[T 17:25:11 4186711] pre_invocations(0)
+[T 17:25:11 4186711] post_invocations(0)
+[T 17:25:11 4186711] trace_languages(1): [java]
+[T 17:25:11 4186712] Initializing tracer.
+[T 17:25:11 4186712] Initializing tags.
+[T 17:25:11 4186712] ID set to 00000000003FE258_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186712] ==== Candidate to intercept: /usr/bin/ls (canonical: /usr/bin/ls) ====
+[T 17:25:11 4186712] Lua: === Intercepted call to /usr/bin/ls ===
+[T 17:25:11 4186712] Executing the following tracer actions:
+[T 17:25:11 4186712] Tracer actions:
+[T 17:25:11 4186712] pre_invocations(0)
+[T 17:25:11 4186712] post_invocations(0)
+[T 17:25:11 4186712] trace_languages(1): [java]
+[T 17:25:11 4186713] Initializing tracer.
+[T 17:25:11 4186713] Initializing tags.
+[T 17:25:11 4186713] ID set to 00000000003FE259_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186713] ==== Candidate to intercept: /usr/bin/expr (canonical: /usr/bin/expr) ====
+[T 17:25:11 4186713] Lua: === Intercepted call to /usr/bin/expr ===
+[T 17:25:11 4186713] Executing the following tracer actions:
+[T 17:25:11 4186713] Tracer actions:
+[T 17:25:11 4186713] pre_invocations(0)
+[T 17:25:11 4186713] post_invocations(0)
+[T 17:25:11 4186713] trace_languages(1): [java]
+[T 17:25:11 4186715] Initializing tracer.
+[T 17:25:11 4186715] Initializing tags.
+[T 17:25:11 4186715] ID set to 00000000003FE25B_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186715] ==== Candidate to intercept: /usr/bin/expr (canonical: /usr/bin/expr) ====
+[T 17:25:11 4186715] Lua: === Intercepted call to /usr/bin/expr ===
+[T 17:25:11 4186715] Executing the following tracer actions:
+[T 17:25:11 4186715] Tracer actions:
+[T 17:25:11 4186715] pre_invocations(0)
+[T 17:25:11 4186715] post_invocations(0)
+[T 17:25:11 4186715] trace_languages(1): [java]
+[T 17:25:11 4186718] Initializing tracer.
+[T 17:25:11 4186718] Initializing tags.
+[T 17:25:11 4186718] ID set to 00000000003FE25E_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186718] ==== Candidate to intercept: /usr/bin/ls (canonical: /usr/bin/ls) ====
+[T 17:25:11 4186718] Lua: === Intercepted call to /usr/bin/ls ===
+[T 17:25:11 4186718] Executing the following tracer actions:
+[T 17:25:11 4186718] Tracer actions:
+[T 17:25:11 4186718] pre_invocations(0)
+[T 17:25:11 4186718] post_invocations(0)
+[T 17:25:11 4186718] trace_languages(1): [java]
+[T 17:25:11 4186719] Initializing tracer.
+[T 17:25:11 4186719] Initializing tags.
+[T 17:25:11 4186719] ID set to 00000000003FE25F_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186719] ==== Candidate to intercept: /usr/bin/expr (canonical: /usr/bin/expr) ====
+[T 17:25:11 4186719] Lua: === Intercepted call to /usr/bin/expr ===
+[T 17:25:11 4186719] Executing the following tracer actions:
+[T 17:25:11 4186719] Tracer actions:
+[T 17:25:11 4186719] pre_invocations(0)
+[T 17:25:11 4186719] post_invocations(0)
+[T 17:25:11 4186719] trace_languages(1): [java]
+[T 17:25:11 4186720] Initializing tracer.
+[T 17:25:11 4186720] Initializing tags.
+[T 17:25:11 4186720] ID set to 00000000003FE260_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186720] ==== Candidate to intercept: /usr/bin/expr (canonical: /usr/bin/expr) ====
+[T 17:25:11 4186720] Lua: === Intercepted call to /usr/bin/expr ===
+[T 17:25:11 4186720] Executing the following tracer actions:
+[T 17:25:11 4186720] Tracer actions:
+[T 17:25:11 4186720] pre_invocations(0)
+[T 17:25:11 4186720] post_invocations(0)
+[T 17:25:11 4186720] trace_languages(1): [java]
+[T 17:25:11 4186722] Initializing tracer.
+[T 17:25:11 4186722] Initializing tags.
+[T 17:25:11 4186722] ID set to 00000000003FE262_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186722] ==== Candidate to intercept: /usr/bin/dirname (canonical: /usr/bin/dirname) ====
+[T 17:25:11 4186722] Lua: === Intercepted call to /usr/bin/dirname ===
+[T 17:25:11 4186722] Executing the following tracer actions:
+[T 17:25:11 4186722] Tracer actions:
+[T 17:25:11 4186722] pre_invocations(0)
+[T 17:25:11 4186722] post_invocations(0)
+[T 17:25:11 4186722] trace_languages(1): [java]
+[T 17:25:11 4186724] Initializing tracer.
+[T 17:25:11 4186724] Initializing tags.
+[T 17:25:11 4186724] ID set to 00000000003FE264_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186724] ==== Candidate to intercept: /usr/bin/which (canonical: /usr/bin/which.debianutils) ====
+[T 17:25:11 4186724] Lua: === Intercepted call to /usr/bin/which.debianutils ===
+[T 17:25:11 4186724] Executing the following tracer actions:
+[T 17:25:11 4186724] Tracer actions:
+[T 17:25:11 4186724] pre_invocations(0)
+[T 17:25:11 4186724] post_invocations(0)
+[T 17:25:11 4186724] trace_languages(1): [java]
+[T 17:25:11 4186731] Initializing tracer.
+[T 17:25:11 4186731] Initializing tags.
+[T 17:25:11 4186731] ID set to 00000000003FE26B_0000000000000001 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186731] ==== Candidate to intercept: /usr/bin/dirname (canonical: /usr/bin/dirname) ====
+[T 17:25:11 4186731] Lua: === Intercepted call to /usr/bin/dirname ===
+[T 17:25:11 4186731] Executing the following tracer actions:
+[T 17:25:11 4186731] Tracer actions:
+[T 17:25:11 4186731] pre_invocations(0)
+[T 17:25:11 4186731] post_invocations(0)
+[T 17:25:11 4186731] trace_languages(1): [java]
+[T 17:25:11 4186710] Initializing tracer.
+[T 17:25:11 4186710] Initializing tags.
+[T 17:25:11 4186710] ID set to 00000000003FE256_0000000000000003 (parent 00000000003FE256_0000000000000002)
+[T 17:25:11 4186710] ==== Candidate to intercept: /usr/bin/java (canonical: /usr/lib/jvm/java-11-openjdk-amd64/bin/java) ====
+[T 17:25:11 4186710] Lua: === Intercepted call to /usr/lib/jvm/java-11-openjdk-amd64/bin/java ===
+[T 17:25:11 4186710] Executing the following tracer actions:
+[T 17:25:11 4186710] Tracer actions:
+[T 17:25:11 4186710] pre_invocations(0)
+[T 17:25:11 4186710] post_invocations(0)
+[T 17:25:11 4186710] trace_languages(1): [java]
+[T 17:25:11 4186710] Passing through -javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin to underlying JVM.
+[T 17:25:11 4186710] Passing through -Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar to underlying JVM.
+[T 17:25:12 4186710] Intercepted JVM creation with extra hidden args: ['-javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin' '-Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar' ] (result: 1, 0).
+[T 17:25:14 4186919] Initializing tracer.
+[T 17:25:14 4186919] Initializing tags.
+[T 17:25:14 4186919] ID set to 00000000003FE327_0000000000000001 (parent 00000000003FE256_0000000000000003)
+[T 17:25:14 4186919] ==== Candidate to intercept: /usr/lib/jvm/java-11-openjdk-amd64/bin/java (canonical: /usr/lib/jvm/java-11-openjdk-amd64/bin/java) ====
+[T 17:25:14 4186919] Lua: === Intercepted call to /usr/lib/jvm/java-11-openjdk-amd64/bin/java ===
+[T 17:25:14 4186919] Executing the following tracer actions:
+[T 17:25:14 4186919] Tracer actions:
+[T 17:25:14 4186919] pre_invocations(0)
+[T 17:25:14 4186919] post_invocations(0)
+[T 17:25:14 4186919] trace_languages(1): [java]
+[T 17:25:14 4186919] Passing through -javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin to underlying JVM.
+[T 17:25:14 4186919] Passing through -Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar to underlying JVM.
+[T 17:25:15 4186919] Intercepted JVM creation with extra hidden args: ['-javaagent:/opt/codeql/java/tools/codeql-java-agent.jar=ignore-project,java,kotlin' '-Xbootclasspath/a:/opt/codeql/java/tools/codeql-java-agent.jar' ] (result: 1, 0).

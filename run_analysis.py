@@ -80,7 +80,32 @@ def main():
         print("🤖 LLM: 패턴 매칭 모드")
     
     try:
-        analyzer = AdvancedVulnerabilityAnalyzer(vuln_id=args.vuln_id, llm_interface=llm_config)
+        # LLM 인터페이스 객체 생성
+        llm_interface = None
+        if llm_config:
+            from llm_interfaces import OpenAIGPTInterface, GeminiInterface, OllamaInterface
+            
+            llm_type = llm_config.get('type', '').lower()
+            if llm_type in ['gpt', 'openai']:
+                llm_interface = OpenAIGPTInterface(
+                    api_key=llm_config.get('api_key'),
+                    model=llm_config.get('model', 'gpt-4'),
+                    temperature=llm_config.get('temperature', 0.1)
+                )
+            elif llm_type == 'gemini':
+                llm_interface = GeminiInterface(
+                    api_key=llm_config.get('api_key'),
+                    model=llm_config.get('model', 'gemini-1.5-flash'),
+                    temperature=llm_config.get('temperature', 0.1)
+                )
+            elif llm_type in ['ollama', 'qwen']:
+                llm_interface = OllamaInterface(
+                    model=llm_config.get('model', 'qwen3:32b'),
+                    temperature=llm_config.get('temperature', 0.1),
+                    base_url=llm_config.get('base_url', 'http://localhost:11434')
+                )
+        
+        analyzer = AdvancedVulnerabilityAnalyzer(vuln_id=args.vuln_id, llm_interface=llm_interface)
         result = analyzer.analyze()
         
         if result["status"] == "completed":

@@ -1,0 +1,25 @@
+TRAP dependencies 1.2
+
+TRAP
+classes/com/alibaba/fastjson/parser/JSONLexer.members/JSONLexer.members#49.0-1653235198000-java.trap.gz
+
+TRAPS
+classes/com/alibaba/fastjson/parser/JSONLexer.members.trap.gz
+classes/java/lang/Object.members.trap.gz
+classes/java/lang/String.members.trap.gz
+classes/java/util/Locale.members.trap.gz
+classes/java/util/TimeZone.members.trap.gz
+classes/java/util/Collection.members.trap.gz
+classes/java/lang/Iterable.members.trap.gz
+classes/com/alibaba/fastjson/parser/SymbolTable.members.trap.gz
+classes/java/lang/Class.members.trap.gz
+classes/java/io/Serializable.members.trap.gz
+classes/java/lang/reflect/GenericDeclaration.members.trap.gz
+classes/java/lang/reflect/Type.members.trap.gz
+classes/java/lang/reflect/AnnotatedElement.members.trap.gz
+classes/java/lang/Enum.members.trap.gz
+classes/java/lang/Comparable.members.trap.gz
+classes/java/math/BigDecimal.members.trap.gz
+classes/java/lang/Cloneable.members.trap.gz
+classes/com/alibaba/fastjson/parser/Feature.members.trap.gz
+classes/java/lang/Number.members.trap.gz

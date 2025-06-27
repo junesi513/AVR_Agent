@@ -1,0 +1,14 @@
+/**
+ * @name 간단한 메서드 탐지 - toObjectArray
+ * @description Detects toObjectArray method calls
+ * @kind problem
+ * @problem.severity high
+ * @id java/vuln-1-toObjectArray-simple
+ */
+
+import java
+
+from Method m
+where 
+  m.getName() = "toObjectArray"
+select m, "Found toObjectArray method at " + m.getLocation().toString()

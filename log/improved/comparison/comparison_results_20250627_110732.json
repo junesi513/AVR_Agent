@@ -1,0 +1,9 @@
+{
+  "1": {
+    "VUL4J---vuln-id": {
+      "status": "error",
+      "error": "모델 1 설정이 없습니다",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/ace4_sijune/test/AVR/improved_analysis.py\", line 110, in _analyze_single_vuln\n    raise ValueError(f\"모델 {model} 설정이 없습니다\")\nValueError: 모델 1 설정이 없습니다\n"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+rules:
+  - id: vuln-1-deserialze
+    message: UNSAFE_DESERIALIZATION
+    severity: HIGH
+    languages: [java]
+    pattern-either:
+      - pattern: |
+          public $TYPE deserialze(...) {
+            ...
+            $PARSER.parseArray(...)
+            ...
+          }
+      - pattern: |
+          $PARSER.parseArray($COMPONENT_TYPE, $ARRAY, $FIELD_NAME)
+      - pattern: |
+          parser.parseArray(...)
+      - pattern: parser.parseArray($ARGS)
+    metadata:
+      category: security
+      technology: [java]
+      cwe: "CWE-502"
+      confidence: HIGH

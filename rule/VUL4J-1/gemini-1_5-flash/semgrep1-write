@@ -1,0 +1,11 @@
+rules:
+  - id: vuln-1-write
+    message: No description
+    severity: MEDIUM
+    languages: [java]
+    pattern-either:
+    metadata:
+      category: security
+      technology: [java]
+      cwe: "CWE-502"
+      confidence: HIGH

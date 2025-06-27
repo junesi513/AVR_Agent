@@ -1,0 +1,17 @@
+TRAP dependencies 1.2
+
+TRAP
+classes/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.members/ASMDeserializerFactory.members#49.0-1653235198000-java.trap.gz
+
+TRAPS
+classes/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.members.trap.gz
+classes/java/lang/Object.members.trap.gz
+classes/com/alibaba/fastjson/asm/Opcodes.members.trap.gz
+classes/com/alibaba/fastjson/parser/ParserConfig.members.trap.gz
+classes/com/alibaba/fastjson/util/JavaBeanInfo.members.trap.gz
+classes/com/alibaba/fastjson/parser/deserializer/ObjectDeserializer.members.trap.gz
+classes/java/lang/Exception.members.trap.gz
+classes/java/lang/ClassLoader.members.trap.gz
+classes/java/lang/String.members.trap.gz
+classes/java/util/concurrent/atomic/AtomicLong.members.trap.gz
+classes/com/alibaba/fastjson/util/ASMClassLoader.members.trap.gz

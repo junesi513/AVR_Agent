@@ -5,6 +5,7 @@ LLM이 제공하는 구체적 정보를 바탕으로 다양한 분석 기법의 
 
 from typing import Dict, List, Any
 import json
+import logging
 
 class CodeQLTemplateEngine:
     """CodeQL 템플릿 기반 쿼리 생성 엔진"""
@@ -17,6 +18,14 @@ class CodeQLTemplateEngine:
             "typetracking": self._get_typetracking_template(),
             "valuetracking": self._get_valuetracking_template()
         }
+        self.extractor = CodeQLInfoExtractor()
+    
+    def generate_codeql_query(self, vuln_type: str, func_name: str, parsed_info: Dict[str, Any] = None) -> str:
+        """메인 CodeQL 쿼리 생성 메서드 - TaintTracking 기반"""
+        if parsed_info is None:
+            parsed_info = {}
+        
+        return self.generate_taint_tracking_template(vuln_type, func_name, parsed_info)
     
     def generate_query(self, template_type: str, llm_info: Dict[str, Any], vuln_id: int, func_name: str) -> str:
         """LLM 정보를 바탕으로 CodeQL 쿼리 생성"""
@@ -43,25 +52,31 @@ class CodeQLTemplateEngine:
 import java
 import semmle.code.java.dataflow.DataFlow
 
-{source_classes}
+class VulnSource extends DataFlow::Node {{
+  VulnSource() {{
+    {source_conditions}
+  }}
+}}
 
-{sink_classes}
-
-{sanitizer_classes}
+class VulnSink extends DataFlow::Node {{
+  VulnSink() {{
+    {sink_conditions}
+  }}
+}}
 
 class VulnConfig extends DataFlow::Configuration {{
   VulnConfig() {{ this = "VulnConfig" }}
   
   override predicate isSource(DataFlow::Node source) {{
-    {source_predicates}
+    source instanceof VulnSource
   }}
   
   override predicate isSink(DataFlow::Node sink) {{
-    {sink_predicates}
+    sink instanceof VulnSink
   }}
   
   override predicate isBarrier(DataFlow::Node node) {{
-    {barrier_predicates}
+    {barrier_conditions}
   }}
 }}
 
@@ -216,26 +231,141 @@ class CodeQLInfoExtractor:
     """LLM 응답에서 CodeQL 생성에 필요한 정보 추출"""
     
     def extract_dataflow_info(self, llm_response: Dict[str, Any], func_name: str) -> Dict[str, Any]:
-        """DataFlow 분석에 필요한 정보 추출"""
-        vulnerability = llm_response.get("vulnerabilities", [{}])[0]
-        
+        """LLM 응답으로부터 DataFlow 분석 정보 추출 (개선된 버전)"""
+        try:
+            vulnerabilities = llm_response.get("vulnerabilities", [])
+            
+            if not vulnerabilities:
+                return self._get_default_dataflow_info(func_name)
+            
+            # 첫 번째 취약점 정보 사용
+            main_vuln = vulnerabilities[0]
+            vuln_type = main_vuln.get("type", "Unknown")
+            description = main_vuln.get("description", "No description")
+            severity = main_vuln.get("severity", "medium")
+            
+            # Source 조건 생성 (매개변수 기반)
+            source_conditions = self._generate_smart_source_conditions(vuln_type, func_name)
+            
+            # Sink 조건 생성 (취약점 유형 기반)
+            sink_conditions = self._generate_smart_sink_conditions(vuln_type, func_name)
+            
+            # Barrier 조건 생성
+            barrier_conditions = self._generate_smart_barrier_conditions(vuln_type)
+            
+            return {
+                "name": f"DataFlow Analysis for {func_name}",
+                "description": description[:200] + "..." if len(description) > 200 else description,
+                "severity": severity.lower(),
+                "source_conditions": source_conditions,
+                "sink_conditions": sink_conditions,
+                "barrier_conditions": barrier_conditions,
+                "vulnerability_desc": vuln_type
+            }
+            
+        except Exception as e:
+            logging.getLogger(__name__).error(f"DataFlow 정보 추출 실패: {e}")
+            return self._get_default_dataflow_info(func_name)
+    
+    def _generate_smart_source_conditions(self, vuln_type: str, func_name: str, parsed_info: Dict[str, Any]) -> str:
+        """취약점 유형에 따른 스마트 source 조건 생성"""
+        if vuln_type == "Unsafe Deserialization":
+            return '''
+    // Parameters from parsing/deserialization methods
+    this.asParameter().getCallable().getName().regexpMatch(".*(parse|deserialize|read|decode).*") or
+    // Input streams and readers
+    this.asExpr().(FieldRead).getField().getType().getName().matches("%InputStream%") or
+    this.asExpr().(FieldRead).getField().getType().getName().matches("%Reader%") or
+    // JSON/XML parser inputs
+    exists(Parameter p | p = this.asParameter() and p.getType().getName().regexpMatch(".*(Parser|Reader|Input).*"))
+    '''
+        elif vuln_type == "NULL_POINTER_DEREFERENCE":
+            return '''
+    // Parameters that could be null
+    this.asParameter().getType().getName().matches("Object%") or
+    // Method return values that could be null
+    exists(MethodAccess ma | ma = this.asExpr() and ma.getMethod().getReturnType().getName() != "void")
+    '''
+        else:
+            return '''
+    // Generic source - parameters and external inputs
+    this.asParameter().getCallable().getName() = "''' + func_name + '''" or
+    exists(FieldRead fr | fr = this.asExpr())
+    '''
+
+    def _generate_smart_sink_conditions(self, vuln_type: str, func_name: str, parsed_info: Dict[str, Any]) -> str:
+        """취약점 유형에 따른 스마트 sink 조건 생성"""
+        if vuln_type == "Unsafe Deserialization":
+            return '''
+    // Dangerous deserialization methods
+    exists(MethodAccess ma |
+      ma.getMethod().getName().regexpMatch(".*(write|serialize|parse|decode|readObject).*") and
+      this.asExpr() = ma.getAnArgument()
+    ) or
+    // Array access operations
+    exists(ArrayAccess aa | this.asExpr() = aa.getArray() or this.asExpr() = aa.getIndexExpr())
+    '''
+        elif vuln_type == "NULL_POINTER_DEREFERENCE":
+            return '''
+    // Method calls on potentially null objects
+    exists(MethodAccess ma | this.asExpr() = ma.getQualifier()) or
+    // Field access on potentially null objects
+    exists(FieldAccess fa | this.asExpr() = fa.getQualifier()) or
+    // Array access on potentially null arrays
+    exists(ArrayAccess aa | this.asExpr() = aa.getArray())
+    '''
+        else:
+            return '''
+    // Generic sink - method calls and field assignments
+    exists(MethodAccess ma | this.asExpr() = ma.getAnArgument()) or
+    exists(FieldWrite fw | this.asExpr() = fw.getRhs())
+    '''
+
+    def _generate_smart_barrier_conditions(self, vuln_type: str, func_name: str, parsed_info: Dict[str, Any]) -> str:
+        """취약점 유형에 따른 스마트 barrier 조건 생성"""
+        if vuln_type == "Unsafe Deserialization":
+            return '''
+    // Validation and sanitization barriers
+    exists(MethodAccess ma |
+      ma.getMethod().getName().regexpMatch(".*(validate|check|verify|sanitize|whitelist).*") and
+      DataFlow::localFlow(node, DataFlow::exprNode(ma.getAnArgument()))
+    ) or
+    // Type checking barriers
+    exists(InstanceOfExpr ioe | DataFlow::localFlow(node, DataFlow::exprNode(ioe.getExpr())))
+    '''
+        elif vuln_type == "NULL_POINTER_DEREFERENCE":
+            return '''
+    // Null checks
+    exists(EqualityTest et | 
+      et.getAnOperand().toString() = "null" and
+      DataFlow::localFlow(node, DataFlow::exprNode(et.getAnOperand()))
+    ) or
+    // Conditional statements that check for null
+    exists(IfStmt if | 
+      if.getCondition().(EqualityTest).getAnOperand().toString() = "null"
+    )
+    '''
+        else:
+            return '''
+    // Generic barriers - validation methods
+    exists(MethodAccess ma |
+      ma.getMethod().getName().regexpMatch(".*(validate|check|verify).*")
+    ) or none()
+    '''
+
+    def _get_default_dataflow_info(self, func_name: str) -> Dict[str, Any]:
+        """기본 DataFlow 정보 반환"""
         return {
             "name": f"DataFlow Analysis for {func_name}",
-            "description": vulnerability.get("description", f"DataFlow vulnerability in {func_name}"),
-            "severity": vulnerability.get("severity", "high"),
-            "vulnerability_desc": vulnerability.get("type", "Unknown vulnerability"),
-            
-            # Source 정보
-            "source_classes": self._generate_source_classes(llm_response.get("sources", [])),
-            "source_predicates": self._generate_source_predicates(llm_response.get("sources", [])),
-            
-            # Sink 정보  
-            "sink_classes": self._generate_sink_classes(llm_response.get("sinks", [])),
-            "sink_predicates": self._generate_sink_predicates(llm_response.get("sinks", [])),
-            
-            # Sanitizer 정보
-            "sanitizer_classes": self._generate_sanitizer_classes(llm_response.get("sanitizers", [])),
-            "barrier_predicates": self._generate_barrier_predicates(llm_response.get("sanitizers", []))
+            "description": "Generic dataflow analysis for potential vulnerabilities",
+            "severity": "medium",
+            "source_conditions": f'this.asParameter().getCallable().getName() = "{func_name}"',
+            "sink_conditions": '''exists(MethodAccess ma |
+      ma.getMethod().getName().matches("%(write|output|send|parse)%") and
+      this.asExpr() = ma.getAnArgument()
+    )''',
+            "barrier_conditions": "none()",
+            "vulnerability_desc": "potential vulnerability"
         }
     
     def extract_controlflow_info(self, llm_response: Dict[str, Any], func_name: str) -> Dict[str, Any]:
@@ -509,4 +639,55 @@ class CodeQLInfoExtractor:
         return "// Value transformation conditions"
     
     def _generate_value_sink_conditions(self, llm_response: Dict[str, Any]) -> str:
-        return "// Value sink conditions" 
+        return "// Value sink conditions"
+
+    def generate_taint_tracking_template(self, vuln_type: str, func_name: str, parsed_info: Dict[str, Any]) -> str:
+        """개선된 Taint Tracking 기반 CodeQL 쿼리 생성"""
+        
+        # 올바른 CodeQL Java import 구문 사용
+        template = f'''/**
+ * @name {vuln_type} in {func_name}
+ * @description Detects {vuln_type.lower()} vulnerabilities in {func_name}
+ * @kind path-problem
+ * @problem.severity error
+ * @id java/{func_name.lower()}-{vuln_type.lower().replace(' ', '-').replace('_', '-')}
+ */
+
+import java
+import semmle.code.java.dataflow.TaintTracking
+import DataFlow::PathGraph
+
+class {func_name}Source extends DataFlow::Node {{
+  {func_name}Source() {{
+    {self._generate_smart_source_conditions(vuln_type, func_name, parsed_info)}
+  }}
+}}
+
+class {func_name}Sink extends DataFlow::Node {{
+  {func_name}Sink() {{
+    {self._generate_smart_sink_conditions(vuln_type, func_name, parsed_info)}
+  }}
+}}
+
+class {func_name}Config extends TaintTracking::Configuration {{
+  {func_name}Config() {{ this = "{func_name}Config" }}
+  
+  override predicate isSource(DataFlow::Node source) {{
+    source instanceof {func_name}Source
+  }}
+  
+  override predicate isSink(DataFlow::Node sink) {{
+    sink instanceof {func_name}Sink
+  }}
+  
+  override predicate isSanitizer(DataFlow::Node node) {{
+    {self._generate_smart_barrier_conditions(vuln_type, func_name, parsed_info)}
+  }}
+}}
+
+from {func_name}Config config, DataFlow::PathNode source, DataFlow::PathNode sink
+where config.hasFlowPath(source, sink)
+select sink.getNode(), source, sink, 
+       "{vuln_type} vulnerability: flow from $@ to $@",
+       source.getNode(), "source", sink.getNode(), "sink"
+''' 

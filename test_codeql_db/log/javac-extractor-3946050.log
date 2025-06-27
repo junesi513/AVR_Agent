@@ -1,0 +1,14 @@
+[2025-06-26 19:00:57] [javac-extractor-3946050] Starting extraction for:
+                                                sun.java.command=com.semmle.extractor.java.JavaExtractor --jdk-version 17 --javac-args @@@/home/ace4_sijune/test/AVR/test_codeql_db/log/ext/javac.args
+                                                user.dir=/home/ace4_sijune/test/AVR
+[2025-06-26 19:00:57] [javac-extractor-3946050] Compilation name /home/ace4_sijune/test/AVR/test_codeql_db/trap/java/diagnostics/diagnostic.trap.gz
+[2025-06-26 19:00:58] [javac-extractor-3946050] Annotation processor class 'lombok.launch.AnnotationProcessorHider$AnnotationProcessor' initialized.
+[2025-06-26 19:00:58] [javac-extractor-3946050] Annotation processor class 'lombok.launch.AnnotationProcessorHider$ClaimingProcessor' initialized.
+[2025-06-26 19:00:59] [javac-extractor-3946050] Processing file benchmark/Java/VUL4J/VUL4J-1/ObjectArrayCodec.java
+[2025-06-26 19:01:00] [javac-extractor-3946050] Processing module java.base
+[2025-06-26 19:01:00] [javac-extractor-3946050] Processing JAR file: /home/ace4_sijune/test/AVR/fastjson.jar
+[2025-06-26 19:01:00] [javac-extractor-3946050] Javac init time: 0.9s
+[2025-06-26 19:01:00] [javac-extractor-3946050] Javac attr time: 0.2s
+[2025-06-26 19:01:00] [javac-extractor-3946050] Extractor time: 1.4s
+[2025-06-26 19:01:00] [javac-extractor-3946050] Other time: 0.1s
+[2025-06-26 19:01:00] [javac-extractor-3946050] Total time: 2.6s

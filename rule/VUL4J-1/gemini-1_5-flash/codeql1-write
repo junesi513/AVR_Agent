@@ -1,0 +1,14 @@
+/**
+ * @name 간단한 메서드 탐지 - write
+ * @description Detects write method calls
+ * @kind problem
+ * @problem.severity high
+ * @id java/vuln-1-write-simple
+ */
+
+import java
+
+from Method m
+where 
+  m.getName() = "write"
+select m, "Found write method at " + m.getLocation().toString()

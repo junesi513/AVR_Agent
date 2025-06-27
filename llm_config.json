@@ -19,10 +19,10 @@
     {
       "name": "qwen",
       "type": "ollama",
-      "model": "qwen:7b",
+      "model": "qwen3:32b",
       "base_url": "http://localhost:11434",
       "temperature": 0.1,
-      "enabled": false
+      "enabled": true
     }
   ],
   "default_llm": "gemini"

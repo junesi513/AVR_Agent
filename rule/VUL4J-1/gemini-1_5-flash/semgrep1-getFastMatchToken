@@ -1,0 +1,11 @@
+rules:
+  - id: vuln-1-getfastmatchtoken
+    message: The method `getFastMatchToken` always returns `JSONToken.LBRACKET`.  While this method itself doesn't directly perform deserialization, it's highly suspicious if this token is used to trigger parsing of untrusted JSON data without proper validation. This could lead to unsafe deserialization vulnerabilities if the returned token is used to initiate parsing of malicious JSON input, potentially leading to Remote Code Execution (RCE).
+    severity: HIGH
+    languages: [java]
+    pattern-either:
+    metadata:
+      category: security
+      technology: [java]
+      cwe: "CWE-502"
+      confidence: HIGH

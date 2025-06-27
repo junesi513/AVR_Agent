@@ -1,0 +1,11 @@
+[2025-06-26 19:01:24] This is codeql query run test_query.ql --database=./test_codeql_db --output=test_results.bqrs
+[2025-06-26 19:01:24] Log file was started late.
+[2025-06-26 19:01:24] Calling plumbing command: codeql resolve ram --dataset=/home/ace4_sijune/test/AVR/test_codeql_db/db-java --format=json
+[2025-06-26 19:01:24] [PROGRESS] resolve ram> Stringpool size measured as 2523546
+[2025-06-26 19:01:24] Plumbing command codeql resolve ram completed:
+                      [
+                        "-J-Xmx13085M",
+                        "--off-heap-ram=16279"
+                      ]
+[2025-06-26 19:01:25] Chaining via /tmp/codeql.T0NZ7zEx to plumbing: execute queries -J-Xmx13085M --off-heap-ram=16279 --verbosity=progress --logdir=/home/ace4_sijune/test/AVR/test_codeql_db/log --evaluator-log-level=5 --warnings=show --dynamic-join-order-mode=none --qlconfig-file=/home/ace4_sijune/test/AVR/qlconfig.yml --output=/home/ace4_sijune/test/AVR/test_results.bqrs -- /home/ace4_sijune/test/AVR/test_codeql_db/db-java path:/home/ace4_sijune/test/AVR/test_query.ql
+[2025-06-26 19:01:25] Exiting with code 70

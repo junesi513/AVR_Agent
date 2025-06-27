@@ -1,0 +1,10 @@
+TRAP dependencies 1.2
+
+TRAP
+classes/com/alibaba/fastjson/parser/ParseContext.members/ParseContext.members#49.0-1653235198000-java.trap.gz
+
+TRAPS
+classes/com/alibaba/fastjson/parser/ParseContext.members.trap.gz
+classes/java/lang/Object.members.trap.gz
+classes/java/lang/String.members.trap.gz
+classes/java/lang/reflect/Type.members.trap.gz

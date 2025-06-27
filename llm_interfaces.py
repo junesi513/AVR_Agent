@@ -156,16 +156,22 @@ class OpenAIGPTInterface(LLMInterface):
             self.logger.error(f"LLM 응답 저장 실패: {e}")
     
     def _extract_json_from_response(self, response: str) -> Optional[str]:
-        """응답에서 JSON 부분을 추출"""
+        """응답에서 JSON 부분을 추출 (개선된 버전)"""
         try:
-            # ```json 코드 블록에서 추출
+            # 1. ```json 코드 블록에서 추출
             if "```json" in response:
                 start = response.find("```json") + 7
                 end = response.find("```", start)
                 if end > start:
-                    return response[start:end].strip()
+                    json_content = response[start:end].strip()
+                    # JSON 유효성 검증
+                    try:
+                        json.loads(json_content)
+                        return json_content
+                    except json.JSONDecodeError:
+                        pass  # 다음 방법 시도
             
-            # { } 괄호로 JSON 추출
+            # 2. { } 괄호로 JSON 추출
             start_idx = response.find('{')
             if start_idx >= 0:
                 brace_count = 0
@@ -175,12 +181,81 @@ class OpenAIGPTInterface(LLMInterface):
                     elif char == '}':
                         brace_count -= 1
                         if brace_count == 0:
-                            return response[start_idx:i+1]
+                            json_content = response[start_idx:i+1]
+                            # JSON 유효성 검증
+                            try:
+                                json.loads(json_content)
+                                return json_content
+                            except json.JSONDecodeError:
+                                pass  # 계속 찾기
+            
+            # 3. JSON 구조 재구성 시도
+            json_content = self._reconstruct_json(response)
+            if json_content:
+                return json_content
+            
+            # 4. 부분 JSON 매칭
+            json_patterns = [
+                r'"vulnerabilities"\s*:\s*\[[^\]]*\]',
+                r'"type"\s*:\s*"[^"]*"',
+                r'"description"\s*:\s*"[^"]*"'
+            ]
+            
+            import re
+            for pattern in json_patterns:
+                matches = re.findall(pattern, response, re.IGNORECASE | re.DOTALL)
+                if matches:
+                    # 기본 JSON 구조 생성
+                    return '{"vulnerabilities": [{"type": "Unknown", "description": "Pattern matched"}]}'
             
             return None
             
         except Exception as e:
             self.logger.error(f"JSON 추출 실패: {e}")
+            return None
+    
+    def _reconstruct_json(self, response: str) -> Optional[str]:
+        """응답에서 JSON 구조를 재구성"""
+        try:
+            import re
+            
+            # vulnerabilities 배열 찾기
+            vuln_pattern = r'"vulnerabilities"\s*:\s*\[(.*?)\]'
+            vuln_match = re.search(vuln_pattern, response, re.DOTALL | re.IGNORECASE)
+            
+            if vuln_match:
+                vuln_content = vuln_match.group(1)
+                
+                # 개별 취약점 추출
+                type_pattern = r'"type"\s*:\s*"([^"]*)"'
+                desc_pattern = r'"description"\s*:\s*"([^"]*)"'
+                severity_pattern = r'"severity"\s*:\s*"([^"]*)"'
+                
+                types = re.findall(type_pattern, vuln_content, re.IGNORECASE)
+                descriptions = re.findall(desc_pattern, vuln_content, re.IGNORECASE)
+                severities = re.findall(severity_pattern, vuln_content, re.IGNORECASE)
+                
+                # JSON 재구성
+                vulnerabilities = []
+                max_len = max(len(types), len(descriptions), len(severities)) if any([types, descriptions, severities]) else 0
+                
+                for i in range(max_len):
+                    vuln = {
+                        "type": types[i] if i < len(types) else "Unknown",
+                        "description": descriptions[i] if i < len(descriptions) else "No description",
+                        "severity": severities[i] if i < len(severities) else "medium",
+                        "confidence": 0.7
+                    }
+                    vulnerabilities.append(vuln)
+                
+                if vulnerabilities:
+                    reconstructed = {"vulnerabilities": vulnerabilities}
+                    return json.dumps(reconstructed)
+            
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"JSON 재구성 실패: {e}")
             return None
     
     def _extract_analysis_summary(self, response: str) -> str:
@@ -343,16 +418,22 @@ class GeminiInterface(LLMInterface):
             self.logger.error(f"LLM 응답 저장 실패: {e}")
     
     def _extract_json_from_response(self, response: str) -> Optional[str]:
-        """응답에서 JSON 부분을 추출"""
+        """응답에서 JSON 부분을 추출 (개선된 버전)"""
         try:
-            # ```json 코드 블록에서 추출
+            # 1. ```json 코드 블록에서 추출
             if "```json" in response:
                 start = response.find("```json") + 7
                 end = response.find("```", start)
                 if end > start:
-                    return response[start:end].strip()
+                    json_content = response[start:end].strip()
+                    # JSON 유효성 검증
+                    try:
+                        json.loads(json_content)
+                        return json_content
+                    except json.JSONDecodeError:
+                        pass  # 다음 방법 시도
             
-            # { } 괄호로 JSON 추출
+            # 2. { } 괄호로 JSON 추출
             start_idx = response.find('{')
             if start_idx >= 0:
                 brace_count = 0
@@ -362,12 +443,81 @@ class GeminiInterface(LLMInterface):
                     elif char == '}':
                         brace_count -= 1
                         if brace_count == 0:
-                            return response[start_idx:i+1]
+                            json_content = response[start_idx:i+1]
+                            # JSON 유효성 검증
+                            try:
+                                json.loads(json_content)
+                                return json_content
+                            except json.JSONDecodeError:
+                                pass  # 계속 찾기
+            
+            # 3. JSON 구조 재구성 시도
+            json_content = self._reconstruct_json(response)
+            if json_content:
+                return json_content
+            
+            # 4. 부분 JSON 매칭
+            json_patterns = [
+                r'"vulnerabilities"\s*:\s*\[[^\]]*\]',
+                r'"type"\s*:\s*"[^"]*"',
+                r'"description"\s*:\s*"[^"]*"'
+            ]
+            
+            import re
+            for pattern in json_patterns:
+                matches = re.findall(pattern, response, re.IGNORECASE | re.DOTALL)
+                if matches:
+                    # 기본 JSON 구조 생성
+                    return '{"vulnerabilities": [{"type": "Unknown", "description": "Pattern matched"}]}'
             
             return None
             
         except Exception as e:
             self.logger.error(f"JSON 추출 실패: {e}")
+            return None
+    
+    def _reconstruct_json(self, response: str) -> Optional[str]:
+        """응답에서 JSON 구조를 재구성"""
+        try:
+            import re
+            
+            # vulnerabilities 배열 찾기
+            vuln_pattern = r'"vulnerabilities"\s*:\s*\[(.*?)\]'
+            vuln_match = re.search(vuln_pattern, response, re.DOTALL | re.IGNORECASE)
+            
+            if vuln_match:
+                vuln_content = vuln_match.group(1)
+                
+                # 개별 취약점 추출
+                type_pattern = r'"type"\s*:\s*"([^"]*)"'
+                desc_pattern = r'"description"\s*:\s*"([^"]*)"'
+                severity_pattern = r'"severity"\s*:\s*"([^"]*)"'
+                
+                types = re.findall(type_pattern, vuln_content, re.IGNORECASE)
+                descriptions = re.findall(desc_pattern, vuln_content, re.IGNORECASE)
+                severities = re.findall(severity_pattern, vuln_content, re.IGNORECASE)
+                
+                # JSON 재구성
+                vulnerabilities = []
+                max_len = max(len(types), len(descriptions), len(severities)) if any([types, descriptions, severities]) else 0
+                
+                for i in range(max_len):
+                    vuln = {
+                        "type": types[i] if i < len(types) else "Unknown",
+                        "description": descriptions[i] if i < len(descriptions) else "No description",
+                        "severity": severities[i] if i < len(severities) else "medium",
+                        "confidence": 0.7
+                    }
+                    vulnerabilities.append(vuln)
+                
+                if vulnerabilities:
+                    reconstructed = {"vulnerabilities": vulnerabilities}
+                    return json.dumps(reconstructed)
+            
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"JSON 재구성 실패: {e}")
             return None
     
     def _extract_analysis_summary(self, response: str) -> str:
@@ -515,16 +665,22 @@ class OllamaInterface(LLMInterface):
             self.logger.error(f"LLM 응답 저장 실패: {e}")
     
     def _extract_json_from_response(self, response: str) -> Optional[str]:
-        """응답에서 JSON 부분을 추출"""
+        """응답에서 JSON 부분을 추출 (개선된 버전)"""
         try:
-            # ```json 코드 블록에서 추출
+            # 1. ```json 코드 블록에서 추출
             if "```json" in response:
                 start = response.find("```json") + 7
                 end = response.find("```", start)
                 if end > start:
-                    return response[start:end].strip()
+                    json_content = response[start:end].strip()
+                    # JSON 유효성 검증
+                    try:
+                        json.loads(json_content)
+                        return json_content
+                    except json.JSONDecodeError:
+                        pass  # 다음 방법 시도
             
-            # { } 괄호로 JSON 추출
+            # 2. { } 괄호로 JSON 추출
             start_idx = response.find('{')
             if start_idx >= 0:
                 brace_count = 0
@@ -534,12 +690,81 @@ class OllamaInterface(LLMInterface):
                     elif char == '}':
                         brace_count -= 1
                         if brace_count == 0:
-                            return response[start_idx:i+1]
+                            json_content = response[start_idx:i+1]
+                            # JSON 유효성 검증
+                            try:
+                                json.loads(json_content)
+                                return json_content
+                            except json.JSONDecodeError:
+                                pass  # 계속 찾기
+            
+            # 3. JSON 구조 재구성 시도
+            json_content = self._reconstruct_json(response)
+            if json_content:
+                return json_content
+            
+            # 4. 부분 JSON 매칭
+            json_patterns = [
+                r'"vulnerabilities"\s*:\s*\[[^\]]*\]',
+                r'"type"\s*:\s*"[^"]*"',
+                r'"description"\s*:\s*"[^"]*"'
+            ]
+            
+            import re
+            for pattern in json_patterns:
+                matches = re.findall(pattern, response, re.IGNORECASE | re.DOTALL)
+                if matches:
+                    # 기본 JSON 구조 생성
+                    return '{"vulnerabilities": [{"type": "Unknown", "description": "Pattern matched"}]}'
             
             return None
             
         except Exception as e:
             self.logger.error(f"JSON 추출 실패: {e}")
+            return None
+    
+    def _reconstruct_json(self, response: str) -> Optional[str]:
+        """응답에서 JSON 구조를 재구성"""
+        try:
+            import re
+            
+            # vulnerabilities 배열 찾기
+            vuln_pattern = r'"vulnerabilities"\s*:\s*\[(.*?)\]'
+            vuln_match = re.search(vuln_pattern, response, re.DOTALL | re.IGNORECASE)
+            
+            if vuln_match:
+                vuln_content = vuln_match.group(1)
+                
+                # 개별 취약점 추출
+                type_pattern = r'"type"\s*:\s*"([^"]*)"'
+                desc_pattern = r'"description"\s*:\s*"([^"]*)"'
+                severity_pattern = r'"severity"\s*:\s*"([^"]*)"'
+                
+                types = re.findall(type_pattern, vuln_content, re.IGNORECASE)
+                descriptions = re.findall(desc_pattern, vuln_content, re.IGNORECASE)
+                severities = re.findall(severity_pattern, vuln_content, re.IGNORECASE)
+                
+                # JSON 재구성
+                vulnerabilities = []
+                max_len = max(len(types), len(descriptions), len(severities)) if any([types, descriptions, severities]) else 0
+                
+                for i in range(max_len):
+                    vuln = {
+                        "type": types[i] if i < len(types) else "Unknown",
+                        "description": descriptions[i] if i < len(descriptions) else "No description",
+                        "severity": severities[i] if i < len(severities) else "medium",
+                        "confidence": 0.7
+                    }
+                    vulnerabilities.append(vuln)
+                
+                if vulnerabilities:
+                    reconstructed = {"vulnerabilities": vulnerabilities}
+                    return json.dumps(reconstructed)
+            
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"JSON 재구성 실패: {e}")
             return None
     
     def _extract_analysis_summary(self, response: str) -> str:

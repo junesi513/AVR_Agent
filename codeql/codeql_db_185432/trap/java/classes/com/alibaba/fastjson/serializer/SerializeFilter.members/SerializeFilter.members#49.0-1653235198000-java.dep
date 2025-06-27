@@ -1,0 +1,8 @@
+TRAP dependencies 1.2
+
+TRAP
+classes/com/alibaba/fastjson/serializer/SerializeFilter.members/SerializeFilter.members#49.0-1653235198000-java.trap.gz
+
+TRAPS
+classes/com/alibaba/fastjson/serializer/SerializeFilter.members.trap.gz
+classes/java/lang/Object.members.trap.gz

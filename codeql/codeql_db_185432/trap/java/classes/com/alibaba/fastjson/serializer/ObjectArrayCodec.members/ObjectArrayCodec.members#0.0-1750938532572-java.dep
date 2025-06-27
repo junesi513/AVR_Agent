@@ -1,0 +1,18 @@
+TRAP dependencies 1.2
+
+TRAP
+classes/com/alibaba/fastjson/serializer/ObjectArrayCodec.members/ObjectArrayCodec.members#0.0-1750938532572-java.trap.gz
+
+TRAPS
+classes/com/alibaba/fastjson/serializer/ObjectArrayCodec.members.trap.gz
+classes/java/lang/Object.members.trap.gz
+classes/com/alibaba/fastjson/serializer/ObjectSerializer.members.trap.gz
+classes/com/alibaba/fastjson/parser/deserializer/ObjectDeserializer.members.trap.gz
+classes/com/alibaba/fastjson/parser/DefaultJSONParser.members.trap.gz
+classes/java/lang/reflect/Type.members.trap.gz
+classes/java/lang/SuppressWarnings.members.trap.gz
+classes/java/lang/String.members.trap.gz
+classes/java/lang/Cloneable.members.trap.gz
+classes/java/io/Serializable.members.trap.gz
+classes/com/alibaba/fastjson/serializer/JSONSerializer.members.trap.gz
+classes/java/io/IOException.members.trap.gz
