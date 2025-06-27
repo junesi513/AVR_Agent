@@ -1,8 +1,0 @@
-TRAP dependencies 1.2
-
-TRAP
-classes/java/nio/channels/AsynchronousCloseException.members/AsynchronousCloseException.members#55.0-1744879213000-java.trap.gz
-
-TRAPS
-classes/java/nio/channels/AsynchronousCloseException.members.trap.gz
-classes/java/nio/channels/ClosedChannelException.members.trap.gz

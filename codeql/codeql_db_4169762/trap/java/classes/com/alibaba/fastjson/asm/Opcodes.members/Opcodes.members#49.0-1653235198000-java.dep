@@ -1,8 +1,0 @@
-TRAP dependencies 1.2
-
-TRAP
-classes/com/alibaba/fastjson/asm/Opcodes.members/Opcodes.members#49.0-1653235198000-java.trap.gz
-
-TRAPS
-classes/com/alibaba/fastjson/asm/Opcodes.members.trap.gz
-classes/java/lang/Object.members.trap.gz

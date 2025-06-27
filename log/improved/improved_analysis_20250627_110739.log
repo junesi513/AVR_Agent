@@ -1,9 +1,0 @@
-2025-06-27 11:07:39,022 - improved_analysis - INFO - === 개선된 취약점 분석 시작 ===
-2025-06-27 11:07:39,022 - improved_analysis - INFO - === 1 모델 분석 시작 ===
-2025-06-27 11:07:39,022 - improved_analysis - INFO - VUL4J---vuln-id 분석 시작
-2025-06-27 11:07:39,022 - improved_analysis - INFO - 사용 가능한 모델: ['gemini', 'qwen']
-2025-06-27 11:07:39,023 - improved_analysis - ERROR - 분석 실패: 모델 1 설정이 없습니다
-2025-06-27 11:07:39,023 - improved_analysis - INFO - VUL4J---vuln-id 분석 완료
-2025-06-27 11:07:39,023 - improved_analysis - INFO - 비교 결과 저장: log/improved/comparison/comparison_results_20250627_110739.json
-2025-06-27 11:07:39,023 - improved_analysis - INFO - 요약 리포트 생성: log/improved/reports/summary_report_20250627_110739.md
-2025-06-27 11:07:39,023 - improved_analysis - INFO - === 개선된 취약점 분석 완료 ===

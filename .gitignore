@@ -1,1 +1,95 @@
- 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific - 분석 결과 및 데이터
+log/
+logs/
+codeql/
+codeql_db*/
+rule/
+rules/
+backup/
+benchmark/
+results/
+*.sarif
+*.csv
+*.jar
+*.class
+
+# 임시 파일
+test_*/
+temp/
+tmp/
+*.tmp
+*.temp
+
+# 생성된 패치 및 분석 결과
+*_patches_*.json
+*_response_*.txt
+*_analysis_*.json
+analysis_result_*.json
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
+# 스크립트 실행 결과
+*.sh
+start*.sh
+
+# 문서 (필요시 주석 해제)
+# *.md
+# README*.md 

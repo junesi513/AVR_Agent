@@ -1,8 +1,0 @@
-2025-06-27 11:10:11,601 - LLM_Response-qwen3_32b - INFO - === Ollama API 호출 시작 ===
-2025-06-27 11:10:11,601 - LLM_Response-qwen3_32b - INFO - 모델: qwen3:32b
-2025-06-27 11:10:11,601 - LLM_Response-qwen3_32b - INFO - 온도: 0.1
-2025-06-27 11:10:11,601 - LLM_Response-qwen3_32b - INFO - 서버: http://localhost:11434
-2025-06-27 11:10:11,601 - LLM_Response-qwen3_32b - INFO - 프롬프트 (일부): You are a Java security expert. Analyze the following method for security vulnerabilities.
-
-Method Name: ObjectArrayCodec
-Method Signature: public ObjectArrayCodec(){ } public final void write(JSONSer...
